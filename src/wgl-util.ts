@@ -435,6 +435,10 @@ export class WglUtil {
         else if (this.cfg.useStereoEffect && this.stereoEffect) {
             this.stereoEffect.render(this.glScene, this.camera);
         }
+        else if (this.cfg.useCssRender) {
+			this.glRenderer.render(this.glScene, this.camera);
+            this.cssRenderer.render(this.glScene, this.camera);
+        }
 		else {
 			this.glRenderer.render(this.glScene, this.camera);
 		}
@@ -1953,7 +1957,10 @@ export class WglUtil {
 	    this.camera.aspect = window.innerWidth / window.innerHeight;
 	    this.camera.updateProjectionMatrix();
 
-	    this.glRenderer.setSize(window.innerWidth, window.innerHeight);
+        this.glRenderer.setSize(window.innerWidth, window.innerHeight);
+        if(this.cfg.useCssRender) {
+            this.cssRenderer.setSize(window.innerWidth, window.innerHeight);
+        }
 
 	    this.render();
     }
