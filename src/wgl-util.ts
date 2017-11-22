@@ -416,9 +416,8 @@ export class WglUtil {
         // this.projector = new THREE.Projector();       
 
 	
-        // this.glRenderer.render(this.glScene, this.camera);
         this.render();
-        
+
         if (this.cfg.useDatGui) {
             this.initDatGui();
         }
@@ -439,7 +438,7 @@ export class WglUtil {
         }
         else if (this.cfg.useCssRender) {
 			this.glRenderer.render(this.glScene, this.camera);
-            this.cssRenderer.render(this.glScene, this.camera);
+            this.cssRenderer.render(this.cssScene, this.camera);
         }
 		else {
 			this.glRenderer.render(this.glScene, this.camera);
