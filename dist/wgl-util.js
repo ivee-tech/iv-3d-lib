@@ -317,7 +317,6 @@ var WglUtil = (function () {
             canvas.appendChild(this.glRenderer.domElement);
         }
         // this.projector = new THREE.Projector();       
-        // this.glRenderer.render(this.glScene, this.camera);
         this.render();
         if (this.cfg.useDatGui) {
             this.initDatGui();
@@ -338,7 +337,7 @@ var WglUtil = (function () {
         }
         else if (this.cfg.useCssRender) {
             this.glRenderer.render(this.glScene, this.camera);
-            this.cssRenderer.render(this.glScene, this.camera);
+            this.cssRenderer.render(this.cssScene, this.camera);
         }
         else {
             this.glRenderer.render(this.glScene, this.camera);
