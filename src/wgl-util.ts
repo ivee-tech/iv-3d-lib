@@ -416,7 +416,9 @@ export class WglUtil {
         // this.projector = new THREE.Projector();       
 
 	
-        this.glRenderer.render(this.glScene, this.camera);
+        // this.glRenderer.render(this.glScene, this.camera);
+        this.render();
+        
         if (this.cfg.useDatGui) {
             this.initDatGui();
         }

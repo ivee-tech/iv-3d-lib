@@ -317,7 +317,8 @@ var WglUtil = (function () {
             canvas.appendChild(this.glRenderer.domElement);
         }
         // this.projector = new THREE.Projector();       
-        this.glRenderer.render(this.glScene, this.camera);
+        // this.glRenderer.render(this.glScene, this.camera);
+        this.render();
         if (this.cfg.useDatGui) {
             this.initDatGui();
         }
@@ -334,6 +335,10 @@ var WglUtil = (function () {
         }
         else if (this.cfg.useStereoEffect && this.stereoEffect) {
             this.stereoEffect.render(this.glScene, this.camera);
+        }
+        else if (this.cfg.useCssRender) {
+            this.glRenderer.render(this.glScene, this.camera);
+            this.cssRenderer.render(this.glScene, this.camera);
         }
         else {
             this.glRenderer.render(this.glScene, this.camera);
@@ -1623,6 +1628,9 @@ var WglUtil = (function () {
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
         this.glRenderer.setSize(window.innerWidth, window.innerHeight);
+        if (this.cfg.useCssRender) {
+            this.cssRenderer.setSize(window.innerWidth, window.innerHeight);
+        }
         this.render();
     };
     WglUtil.prototype.addSelectedObjectBoxHelper = function (group) {
