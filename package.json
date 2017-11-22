@@ -1,6 +1,6 @@
 {
   "name": "iv-3d-lib",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A reusable ThreeJS library providing features for Ivee 3D Editor.",
   "main": "index.js",
   "types": "index.d.ts",
