@@ -1,8 +1,8 @@
 "use strict";
 // import THREE = require('three');
-var THREE = require('three');
-var Boid = (function () {
-    function Boid() {
+const THREE = require('three');
+class Boid {
+    constructor() {
         this.vector = new THREE.Vector3();
         this._acceleration = new THREE.Vector3();
         this._width = 500;
@@ -15,21 +15,21 @@ var Boid = (function () {
         this.position = new THREE.Vector3();
         this.velocity = new THREE.Vector3();
     }
-    Boid.prototype.setGoal = function (target) {
+    setGoal(target) {
         this._goal = target;
-    };
+    }
     ;
-    Boid.prototype.setAvoidWalls = function (value) {
+    setAvoidWalls(value) {
         this._avoidWalls = value;
-    };
+    }
     ;
-    Boid.prototype.setWorldSize = function (width, height, depth) {
+    setWorldSize(width, height, depth) {
         this._width = width;
         this._height = height;
         this._depth = depth;
-    };
+    }
     ;
-    Boid.prototype.run = function (boids) {
+    run(boids) {
         if (this._avoidWalls) {
             this.vector.set(-this._width, this.position.y, this.position.z);
             this.vector = this.avoid(this.vector);
@@ -65,18 +65,18 @@ var Boid = (function () {
             this.flock(boids);
         }
         this.move();
-    };
+    }
     ;
-    Boid.prototype.flock = function (boids) {
+    flock(boids) {
         if (this._goal) {
             this._acceleration.add(this.reach(this._goal, 0.005));
         }
         this._acceleration.add(this.alignment(boids));
         this._acceleration.add(this.cohesion(boids));
         this._acceleration.add(this.separation(boids));
-    };
+    }
     ;
-    Boid.prototype.move = function () {
+    move() {
         this.velocity.add(this._acceleration);
         var l = this.velocity.length();
         if (l > this._maxSpeed) {
@@ -84,9 +84,9 @@ var Boid = (function () {
         }
         this.position.add(this.velocity);
         this._acceleration.set(0, 0, 0);
-    };
+    }
     ;
-    Boid.prototype.checkBounds = function () {
+    checkBounds() {
         if (this.position.x > this._width)
             this.position.x = -this._width;
         if (this.position.x < -this._width)
@@ -99,18 +99,18 @@ var Boid = (function () {
             this.position.z = -this._depth;
         if (this.position.z < -this._depth)
             this.position.z = this._depth;
-    };
+    }
     ;
     //
-    Boid.prototype.avoid = function (target) {
+    avoid(target) {
         var steer = new THREE.Vector3();
         steer.copy(this.position);
         steer.sub(target);
         steer.multiplyScalar(1 / this.position.distanceToSquared(target));
         return steer;
-    };
+    }
     ;
-    Boid.prototype.repulse = function (target) {
+    repulse(target) {
         var distance = this.position.distanceTo(target);
         if (distance < 150) {
             var steer = new THREE.Vector3();
@@ -118,22 +118,22 @@ var Boid = (function () {
             steer.multiplyScalar(0.5 / distance);
             this._acceleration.add(steer);
         }
-    };
+    }
     ;
-    Boid.prototype.reach = function (target, amount) {
+    reach(target, amount) {
         var steer = new THREE.Vector3();
         steer.subVectors(target, this.position);
         steer.multiplyScalar(amount);
         return steer;
-    };
+    }
     ;
-    Boid.prototype.alignment = function (boids) {
+    alignment(boids) {
         var boid, velSum = new THREE.Vector3(), count = 0;
         for (var i = 0, il = boids.length; i < il; i++) {
             if (Math.random() > 0.6)
                 continue;
             boid = boids[i];
-            var distance = boid.position.distanceTo(this.position);
+            let distance = boid.position.distanceTo(this.position);
             if (distance > 0 && distance <= this._neighborhoodRadius) {
                 velSum.add(boid.velocity);
                 count++;
@@ -147,9 +147,9 @@ var Boid = (function () {
             }
         }
         return velSum;
-    };
+    }
     ;
-    Boid.prototype.cohesion = function (boids) {
+    cohesion(boids) {
         var boid, distance, posSum = new THREE.Vector3(), steer = new THREE.Vector3(), count = 0;
         for (var i = 0, il = boids.length; i < il; i++) {
             if (Math.random() > 0.6)
@@ -170,9 +170,9 @@ var Boid = (function () {
             steer.divideScalar(l / this._maxSteerForce);
         }
         return steer;
-    };
+    }
     ;
-    Boid.prototype.separation = function (boids) {
+    separation(boids) {
         var boid, distance, posSum = new THREE.Vector3(), repulse = new THREE.Vector3();
         for (var i = 0, il = boids.length; i < il; i++) {
             if (Math.random() > 0.6)
@@ -187,7 +187,7 @@ var Boid = (function () {
             }
         }
         return posSum;
-    };
-    return Boid;
-}());
+    }
+}
 exports.Boid = Boid;
+//# sourceMappingURL=boid.js.map

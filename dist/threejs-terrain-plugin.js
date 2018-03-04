@@ -1,10 +1,10 @@
 "use strict";
-var THREE = require('three');
-var shaders = require('three-shaders');
-var ShaderTerrain = require('three-shader-terrain');
-var BufferGeometryUtils = require('three-buffer-geometry-utils');
-var ThreeJsTerrainPlugin = (function () {
-    function ThreeJsTerrainPlugin(_errorSvc) {
+const THREE = require('three');
+const shaders = require('three-shaders');
+const ShaderTerrain = require('three-shader-terrain');
+const BufferGeometryUtils = require('three-buffer-geometry-utils');
+class ThreeJsTerrainPlugin {
+    constructor(_errorSvc) {
         this._errorSvc = _errorSvc;
         this.SCREEN_WIDTH = window.innerWidth;
         this.SCREEN_HEIGHT = window.innerHeight;
@@ -16,16 +16,15 @@ var ThreeJsTerrainPlugin = (function () {
         this.animDeltaDir = -1;
         this.clock = new THREE.Clock();
     }
-    ThreeJsTerrainPlugin.prototype.init = function () {
-    };
-    ThreeJsTerrainPlugin.prototype.load = function () {
+    init() {
+    }
+    load() {
         this.addTerrain();
-    };
-    ThreeJsTerrainPlugin.prototype.update = function (time) {
+    }
+    update(time) {
         this.updateTerrain();
-    };
-    ThreeJsTerrainPlugin.prototype.addTerrain = function () {
-        var _this = this;
+    }
+    addTerrain() {
         this.sceneRenderTarget = new THREE.Scene();
         this.cameraOrtho = new THREE.OrthographicCamera(this.SCREEN_WIDTH / -2, this.SCREEN_WIDTH / 2, this.SCREEN_HEIGHT / 2, this.SCREEN_HEIGHT / -2, -10000, 10000);
         this.cameraOrtho.position.z = 100;
@@ -62,21 +61,21 @@ var ThreeJsTerrainPlugin = (function () {
         this.uniformsNormal.height.value = 0.05;
         this.uniformsNormal.resolution.value.set(rx, ry);
         this.uniformsNormal.heightMap.value = this.heightMap.texture;
-        var shader = this.data.shaders.find(function (item) { return item.id === _this.config['shaderNoiseId']; });
-        var vertexShader = shader.vertexProgram;
-        var fragmentShader = shader.fragmentProgram;
+        let shader = this.data.shaders.find(item => item.id === this.config['shaderNoiseId']);
+        let vertexShader = shader.vertexProgram;
+        let fragmentShader = shader.fragmentProgram;
         // TEXTURES
-        var loadingManager = new THREE.LoadingManager(function () {
-            if (_this.terrain) {
-                _this.terrain.visible = true;
+        var loadingManager = new THREE.LoadingManager(() => {
+            if (this.terrain) {
+                this.terrain.visible = true;
             }
         });
         var textureLoader = new THREE.TextureLoader(loadingManager);
         var specularMap = new THREE.WebGLRenderTarget(2048, 2048, pars);
         specularMap.texture.generateMipmaps = false;
-        var diffuseTexture1 = textureLoader.load("" + this.config['diffuseTexture1FilePath']);
-        var diffuseTexture2 = textureLoader.load("" + this.config['diffuseTexture2FilePath']);
-        var detailTexture = textureLoader.load("" + this.config['detailTextureFilePath']);
+        var diffuseTexture1 = textureLoader.load(`${this.config['diffuseTexture1FilePath']}`);
+        var diffuseTexture2 = textureLoader.load(`${this.config['diffuseTexture2FilePath']}`);
+        var detailTexture = textureLoader.load(`${this.config['detailTextureFilePath']}`);
         diffuseTexture1.wrapS = diffuseTexture1.wrapT = THREE.RepeatWrapping;
         diffuseTexture2.wrapS = diffuseTexture2.wrapT = THREE.RepeatWrapping;
         detailTexture.wrapS = detailTexture.wrapT = THREE.RepeatWrapping;
@@ -127,8 +126,8 @@ var ThreeJsTerrainPlugin = (function () {
         this.terrain.rotation.x = -Math.PI / 2;
         this.terrain.visible = false;
         this.w.add(this.terrain);
-    };
-    ThreeJsTerrainPlugin.prototype.updateTerrain = function () {
+    }
+    updateTerrain() {
         var delta = this.clock.getDelta();
         if (this.terrain && this.terrain.visible) {
             var time = Date.now() * 0.001;
@@ -151,7 +150,7 @@ var ThreeJsTerrainPlugin = (function () {
                 this.w.glRenderer.render(this.sceneRenderTarget, this.cameraOrtho, this.normalMap, true);
             }
         }
-    };
-    return ThreeJsTerrainPlugin;
-}());
+    }
+}
 exports.ThreeJsTerrainPlugin = ThreeJsTerrainPlugin;
+//# sourceMappingURL=threejs-terrain-plugin.js.map

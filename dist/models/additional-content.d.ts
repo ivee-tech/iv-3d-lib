@@ -5,6 +5,7 @@ export declare class AdditionalContent {
     content: string;
     css: CssCfg;
     showFlag: boolean;
+    constructor();
     hide(): void;
     show(): void;
 }

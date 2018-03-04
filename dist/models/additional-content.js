@@ -1,16 +1,17 @@
 "use strict";
-var wgl_util_cfgs_1 = require('../wgl-util-cfgs');
-var AdditionalContent = (function () {
-    function AdditionalContent() {
+const wgl_util_cfgs_1 = require('../wgl-util-cfgs');
+class AdditionalContent {
+    constructor() {
         this.css = new wgl_util_cfgs_1.CssCfg();
         this.showFlag = true;
+        this.content = ``;
     }
-    AdditionalContent.prototype.hide = function () {
+    hide() {
         this.showFlag = false;
-    };
-    AdditionalContent.prototype.show = function () {
+    }
+    show() {
         this.showFlag = true;
-    };
-    return AdditionalContent;
-}());
+    }
+}
 exports.AdditionalContent = AdditionalContent;
+//# sourceMappingURL=additional-content.js.map

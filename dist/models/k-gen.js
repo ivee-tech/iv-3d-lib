@@ -31,11 +31,9 @@ Dual licensed under the MIT and GPL licenses.
  *   >>> Math.uuid(8, 16) // 8 character ID (base=16)
  *   "098F4D35"
  */
-var KGen = (function () {
-    function KGen() {
-    }
-    KGen.uuid = function (len, radix) {
-        var chars = this.CHARS, uuid = [];
+class KGen {
+    static uuid(len, radix) {
+        let chars = this.CHARS, uuid = [];
         radix = radix || chars.length;
         if (len) {
             // Compact form
@@ -58,11 +56,11 @@ var KGen = (function () {
             }
         }
         return uuid.join('');
-    };
+    }
     ;
     // A more performant, but slightly bulkier, RFC4122v4 solution.  We boost performance
     // by minimizing calls to random()
-    KGen.uuidFast = function () {
+    static uuidFast() {
         var chars = this.CHARS, uuid = new Array(36), rnd = 0, r;
         for (var i = 0; i < 36; i++) {
             if (i == 8 || i == 13 || i == 18 || i == 23) {
@@ -80,31 +78,31 @@ var KGen = (function () {
             }
         }
         return uuid.join('');
-    };
+    }
     ;
     // A more compact, but less performant, RFC4122v4 solution:
-    KGen.uuidCompact = function () {
+    static uuidCompact() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
             var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         }).toUpperCase();
-    };
+    }
     ;
-    KGen.randomNumber = function (min, max) {
+    static randomNumber(min, max) {
         if (typeof (min) == "undefined")
             min = 0;
         if (typeof (max) == "undefined")
             max = Number.MAX_VALUE;
         var number = Math.floor(Math.random() * (max - min + 1)) + min;
         return number;
-    };
+    }
     ;
-    KGen.rnd = function () {
+    static rnd() {
         var n = Math.random() * 0x1000000;
         return parseInt(n.toString());
-    };
-    // Private array of chars to use
-    KGen.CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
-    return KGen;
-}());
+    }
+}
+// Private array of chars to use
+KGen.CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
 exports.KGen = KGen;
+//# sourceMappingURL=k-gen.js.map

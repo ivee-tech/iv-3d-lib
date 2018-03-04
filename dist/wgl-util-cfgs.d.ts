@@ -325,6 +325,7 @@ export declare class CssCfg {
     width: string;
     height: string;
     opacity: string;
+    'z-index': string;
 }
 export declare class SpriteCfg {
     map: any;

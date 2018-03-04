@@ -1,8 +1,8 @@
 "use strict";
 exports.PUBLIC_USER = 'public@ivee.tech';
 exports.PUBLIC_DIR = 'public';
-var UserService = (function () {
-    function UserService() {
+class UserService {
+    constructor() {
         this._userName = '';
         this._isAuthenticated = false;
         this._token = '';
@@ -10,7 +10,7 @@ var UserService = (function () {
         this._userKey = '';
         this.checkAuth();
     }
-    UserService.prototype.setLogin = function (userName, token) {
+    setLogin(userName, token) {
         if (token) {
             this._userName = userName;
             localStorage.setItem('iv-3d-editor.UserLoggedIn', '1');
@@ -18,16 +18,16 @@ var UserService = (function () {
             localStorage.setItem('iv-3d-editor.access_token', token);
         }
         this.checkAuth();
-    };
-    UserService.prototype.setFriendlyName = function (friendlyName) {
+    }
+    setFriendlyName(friendlyName) {
         this._friendlyName = friendlyName;
         localStorage.setItem('iv-3d-editor.FriendlyName', friendlyName);
-    };
-    UserService.prototype.setUserKey = function (userKey) {
+    }
+    setUserKey(userKey) {
         this._userKey = userKey;
         localStorage.setItem('iv-3d-editor.UserKey', userKey);
-    };
-    UserService.prototype.resetLogin = function () {
+    }
+    resetLogin() {
         this._userName = '';
         localStorage.removeItem('iv-3d-editor.UserLoggedIn');
         localStorage.removeItem('iv-3d-editor.UserName');
@@ -35,44 +35,24 @@ var UserService = (function () {
         localStorage.removeItem('iv-3d-editor.FriendlyName');
         localStorage.removeItem('iv-3d-editor.UserKey');
         this.checkAuth();
-    };
-    Object.defineProperty(UserService.prototype, "userName", {
-        get: function () {
-            return this._userName;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UserService.prototype, "token", {
-        get: function () {
-            return this._token;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UserService.prototype, "isAuthenticated", {
-        get: function () {
-            return this._isAuthenticated;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UserService.prototype, "friendlyName", {
-        get: function () {
-            return this._friendlyName;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(UserService.prototype, "userKey", {
-        get: function () {
-            return this._userKey;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    UserService.prototype.checkAuth = function () {
-        var item = localStorage.getItem('iv-3d-editor.UserLoggedIn');
+    }
+    get userName() {
+        return this._userName;
+    }
+    get token() {
+        return this._token;
+    }
+    get isAuthenticated() {
+        return this._isAuthenticated;
+    }
+    get friendlyName() {
+        return this._friendlyName;
+    }
+    get userKey() {
+        return this._userKey;
+    }
+    checkAuth() {
+        let item = localStorage.getItem('iv-3d-editor.UserLoggedIn');
         this._userName = localStorage.getItem('iv-3d-editor.UserName');
         this._friendlyName = localStorage.getItem('iv-3d-editor.FriendlyName');
         this._userKey = localStorage.getItem('iv-3d-editor.UserKey');
@@ -83,8 +63,8 @@ var UserService = (function () {
         if (this._isAuthenticated) {
             this._token = localStorage.getItem('iv-3d-editor.access_token');
         }
-    };
-    UserService.prototype.isValidEmail = function (email) {
+    }
+    isValidEmail(email) {
         var qtext = '[^\\x0d\\x22\\x5c\\x80-\\xff]';
         var dtext = '[^\\x0d\\x5b-\\x5d\\x80-\\xff]';
         var atom = '[^\\x00-\\x20\\x22\\x28\\x29\\x2c\\x2e\\x3a-\\x3c' + '\\x3e\\x40\\x5b-\\x5d\\x7f-\\xff]+';
@@ -100,7 +80,7 @@ var UserService = (function () {
         var pattern = "^" + addr_spec + "$";
         var re = new RegExp(pattern);
         return re.test(email);
-    };
-    return UserService;
-}());
+    }
+}
 exports.UserService = UserService;
+//# sourceMappingURL=user-service.js.map

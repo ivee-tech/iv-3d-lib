@@ -1,13 +1,13 @@
 "use strict";
-var parser = require('expr-eval');
-var cfg = require('./wgl-util-cfgs');
-var CameraTimelinePlugin = (function () {
+const parser = require('expr-eval');
+const cfg = require('./wgl-util-cfgs');
+class CameraTimelinePlugin {
     /*
     public camera: THREE.Camera;
 
     public scene: THREE.Scene;
     */
-    function CameraTimelinePlugin(_timeline, _errorSvc) {
+    constructor(_timeline, _errorSvc) {
         this._timeline = _timeline;
         this._errorSvc = _errorSvc;
         this.vMeshCameraVerticesIndex = -1;
@@ -18,23 +18,22 @@ var CameraTimelinePlugin = (function () {
         this.timeline = _timeline;
         this.oParser = new parser.Parser();
     }
-    CameraTimelinePlugin.prototype.init = function () {
-    };
-    CameraTimelinePlugin.prototype.load = function () {
+    init() {
+    }
+    load() {
         this.evaluateTimelineExpressions(this.timeline);
-    };
-    CameraTimelinePlugin.prototype.update = function (time) {
+    }
+    update(time) {
         this.animateTimeline(this.timeline, time);
-    };
-    CameraTimelinePlugin.prototype.evaluateTimelineExpressions = function (timeline) {
+    }
+    evaluateTimelineExpressions(timeline) {
         this.evaluateDisplacementExpression(timeline.cameraPositionDisplacement, 'x');
         this.evaluateDisplacementExpression(timeline.cameraPositionDisplacement, 'y');
         this.evaluateDisplacementExpression(timeline.cameraPositionDisplacement, 'z');
         this.evaluateDisplacementExpression(timeline.meshCameraVerticesDisplacement, 'x');
         this.evaluateDisplacementExpression(timeline.meshCameraVerticesDisplacement, 'y');
         this.evaluateDisplacementExpression(timeline.meshCameraVerticesDisplacement, 'z');
-        for (var _i = 0, _a = timeline.meshes; _i < _a.length; _i++) {
-            var tmesh = _a[_i];
+        for (let tmesh of timeline.meshes) {
             this.evaluateDisplacementExpression(tmesh.positionDisplacement, 'x');
             this.evaluateDisplacementExpression(tmesh.positionDisplacement, 'y');
             this.evaluateDisplacementExpression(tmesh.positionDisplacement, 'z');
@@ -45,8 +44,8 @@ var CameraTimelinePlugin = (function () {
             this.evaluateDisplacementExpression(tmesh.scaleDisplacement, 'y');
             this.evaluateDisplacementExpression(tmesh.scaleDisplacement, 'z');
         }
-    };
-    CameraTimelinePlugin.prototype.evaluateDisplacementExpression = function (displacement, p) {
+    }
+    evaluateDisplacementExpression(displacement, p) {
         if (!displacement || !displacement.expression) {
             return;
         }
@@ -62,8 +61,8 @@ var CameraTimelinePlugin = (function () {
         else {
             displacement.expression['fn' + p] = null;
         }
-    };
-    CameraTimelinePlugin.prototype.moveTimelineCamera = function (timeline) {
+    }
+    moveTimelineCamera(timeline) {
         if (timeline.cameraPositionDisplacement && timeline.cameraPositionDisplacement.enabled) {
             if (!timeline.cameraDirection) {
                 timeline.cameraDirection = new cfg.XYZ(1, 1, 1);
@@ -98,20 +97,20 @@ var CameraTimelinePlugin = (function () {
                 }
             }
         }
-    };
-    CameraTimelinePlugin.prototype.moveTimelineCameraByExpression = function (timeline, time) {
+    }
+    moveTimelineCameraByExpression(timeline, time) {
         if (timeline.cameraPositionDisplacement && timeline.cameraPositionDisplacement.enabled && timeline.cameraPositionDisplacement.expression) {
             this.moveTimelineCameraDisplacementByExpression(timeline.cameraPositionDisplacement, 'x', 'fnx', time);
             this.moveTimelineCameraDisplacementByExpression(timeline.cameraPositionDisplacement, 'y', 'fny', time);
             this.moveTimelineCameraDisplacementByExpression(timeline.cameraPositionDisplacement, 'z', 'fnz', time);
         }
-    };
-    CameraTimelinePlugin.prototype.moveTimelineCameraDisplacementByExpression = function (displacement, p, fn, time) {
+    }
+    moveTimelineCameraDisplacementByExpression(displacement, p, fn, time) {
         if (displacement.expression && displacement.expression[fn] && displacement.expression[fn].evaluate) {
             this.w.camera.position[p] = displacement.expression[fn].evaluate({ t: time });
         }
-    };
-    CameraTimelinePlugin.prototype.animateTimeline = function (timeline, time) {
+    }
+    animateTimeline(timeline, time) {
         if (timeline.enabled) {
             this.moveTimelineCamera(timeline);
             this.moveTimelineMeshCameraVertices(timeline);
@@ -120,15 +119,15 @@ var CameraTimelinePlugin = (function () {
                 this.animateTimelineMeshes(timeline, time);
             }
         }
-    };
-    CameraTimelinePlugin.prototype.moveTimelineMeshCameraVertices = function (timeline) {
+    }
+    moveTimelineMeshCameraVertices(timeline) {
         if (!timeline || !timeline.meshCameraVerticesDisplacement || !timeline.meshCameraVerticesDisplacement.enabled)
             return;
         if (!this.meshCameraVerticesSet) {
             if (this.mainGroup && this.mainGroup.children && this.mainGroup.children.length > 0) {
-                var mesh = this.mainGroup.children.find(function (item) { return item.uuid === timeline.meshCameraVerticesUUID; });
+                let mesh = this.mainGroup.children.find(item => item.uuid === timeline.meshCameraVerticesUUID);
                 if (mesh) {
-                    var geom = mesh.geometry;
+                    let geom = mesh.geometry;
                     this.meshCameraVertices = geom.vertices;
                     this.meshCameraVerticesSet = true;
                 }
@@ -143,16 +142,16 @@ var CameraTimelinePlugin = (function () {
                 this.vMeshCameraVerticesIndex = 0;
             if (this.vMeshCameraVerticesNextIndex >= this.meshCameraVertices.length)
                 this.vMeshCameraVerticesNextIndex = 1;
-            var v = this.meshCameraVertices[this.vMeshCameraVerticesIndex];
-            var vNext = this.meshCameraVertices[this.vMeshCameraVerticesNextIndex];
+            let v = this.meshCameraVertices[this.vMeshCameraVerticesIndex];
+            let vNext = this.meshCameraVertices[this.vMeshCameraVerticesNextIndex];
             if (v && vNext) {
                 if (this.resetMeshCameraVerticesFlag)
                     this.resetMeshCameraVertices(v, vNext);
                 this.w.camera.lookAt(vNext);
                 this.resetMeshCameraVerticesFlag = false;
-                var doneX = this.moveMeshCameraVertices(v, vNext, 'x', timeline.meshCameraVerticesDisplacement.displacement.x);
-                var doneY = this.moveMeshCameraVertices(v, vNext, 'y', timeline.meshCameraVerticesDisplacement.displacement.x);
-                var doneZ = this.moveMeshCameraVertices(v, vNext, 'z', timeline.meshCameraVerticesDisplacement.displacement.x);
+                let doneX = this.moveMeshCameraVertices(v, vNext, 'x', timeline.meshCameraVerticesDisplacement.displacement.x);
+                let doneY = this.moveMeshCameraVertices(v, vNext, 'y', timeline.meshCameraVerticesDisplacement.displacement.x);
+                let doneZ = this.moveMeshCameraVertices(v, vNext, 'z', timeline.meshCameraVerticesDisplacement.displacement.x);
                 if (doneX && doneY && doneZ) {
                     this.w.camera.lookAt(vNext);
                     this.moveMeshCameraVerticesNext(vNext, 'x');
@@ -161,14 +160,14 @@ var CameraTimelinePlugin = (function () {
                 }
             }
         }
-    };
-    CameraTimelinePlugin.prototype.resetMeshCameraVertices = function (v, vNext) {
+    }
+    resetMeshCameraVertices(v, vNext) {
         this.w.camera.position.x = v.x;
         this.w.camera.position.y = v.y;
         this.w.camera.position.z = v.z;
-    };
-    CameraTimelinePlugin.prototype.moveMeshCameraVertices = function (v, vNext, p, displacement) {
-        var done = false;
+    }
+    moveMeshCameraVertices(v, vNext, p, displacement) {
+        let done = false;
         if (vNext[p] < v[p]) {
             this.w.camera.position[p] -= displacement;
             if (this.w.camera.position[p] < vNext[p]) {
@@ -182,48 +181,43 @@ var CameraTimelinePlugin = (function () {
             }
         }
         return done;
-    };
-    CameraTimelinePlugin.prototype.moveMeshCameraVerticesNext = function (vNext, p) {
+    }
+    moveMeshCameraVerticesNext(vNext, p) {
         this.w.camera.position[p] = vNext[p];
         this.vMeshCameraVerticesIndex++;
         this.vMeshCameraVerticesNextIndex++;
-    };
-    CameraTimelinePlugin.prototype.animateTimelineMeshes = function (timeline, time) {
+    }
+    animateTimelineMeshes(timeline, time) {
         if (this.mainGroup && timeline.meshes) {
-            var _loop_1 = function(tmesh) {
-                var mesh = this_1.mainGroup.children.find(function (item) { return item.uuid === tmesh.uuid; });
+            for (let tmesh of timeline.meshes) {
+                let mesh = this.mainGroup.children.find(item => item.uuid === tmesh.uuid);
                 if (!mesh)
-                    return "continue";
+                    continue;
                 if (cfg.U.isEmpty(tmesh.visible)) {
                 }
                 if (!tmesh.visible) {
                     mesh.visible = false;
-                    return "continue";
+                    continue;
                 }
                 else {
                     mesh.visible = true;
                 }
-                this_1.moveMesh(mesh, tmesh);
+                this.moveMesh(mesh, tmesh);
                 if (time) {
-                    this_1.moveMeshByExpression(mesh, tmesh, time);
+                    this.moveMeshByExpression(mesh, tmesh, time);
                 }
-                this_1.scaleMesh(mesh, tmesh);
+                this.scaleMesh(mesh, tmesh);
                 if (time) {
-                    this_1.scaleMeshByExpression(mesh, tmesh, time);
+                    this.scaleMeshByExpression(mesh, tmesh, time);
                 }
-                this_1.rotateMesh(mesh, tmesh);
+                this.rotateMesh(mesh, tmesh);
                 if (time) {
-                    this_1.rotateMeshByExpression(mesh, tmesh, time);
+                    this.rotateMeshByExpression(mesh, tmesh, time);
                 }
-            };
-            var this_1 = this;
-            for (var _i = 0, _a = timeline.meshes; _i < _a.length; _i++) {
-                var tmesh = _a[_i];
-                _loop_1(tmesh);
             }
         }
-    };
-    CameraTimelinePlugin.prototype.moveMesh = function (mesh, tmesh) {
+    }
+    moveMesh(mesh, tmesh) {
         if (mesh) {
             if (tmesh.positionDisplacement && tmesh.positionDisplacement.enabled) {
                 if (!tmesh.positionDirection) {
@@ -258,8 +252,8 @@ var CameraTimelinePlugin = (function () {
                 }
             }
         }
-    };
-    CameraTimelinePlugin.prototype.moveMeshByExpression = function (mesh, tmesh, time) {
+    }
+    moveMeshByExpression(mesh, tmesh, time) {
         if (mesh) {
             if (tmesh.positionDisplacement && tmesh.positionDisplacement.enabled) {
                 this.moveMeshDisplacementByExpression(mesh, tmesh.positionDisplacement, 'x', 'fnx', time);
@@ -267,13 +261,13 @@ var CameraTimelinePlugin = (function () {
                 this.moveMeshDisplacementByExpression(mesh, tmesh.positionDisplacement, 'z', 'fnz', time);
             }
         }
-    };
-    CameraTimelinePlugin.prototype.moveMeshDisplacementByExpression = function (mesh, displacement, p, fn, time) {
+    }
+    moveMeshDisplacementByExpression(mesh, displacement, p, fn, time) {
         if (displacement.expression && displacement.expression[fn] && displacement.expression[fn].evaluate) {
             mesh.position[p] = displacement.expression[fn].evaluate({ t: time });
         }
-    };
-    CameraTimelinePlugin.prototype.rotateMesh = function (mesh, tmesh) {
+    }
+    rotateMesh(mesh, tmesh) {
         if (mesh) {
             if (tmesh.rotationDisplacement && tmesh.rotationDisplacement.enabled) {
                 if (!tmesh.rotationDirection) {
@@ -308,8 +302,8 @@ var CameraTimelinePlugin = (function () {
                 }
             }
         }
-    };
-    CameraTimelinePlugin.prototype.rotateMeshByExpression = function (mesh, tmesh, time) {
+    }
+    rotateMeshByExpression(mesh, tmesh, time) {
         if (mesh) {
             if (tmesh.rotationDisplacement && tmesh.rotationDisplacement.enabled) {
                 this.rotateMeshDisplacementByExpression(mesh, tmesh.rotationDisplacement, 'x', 'fnx', time);
@@ -317,13 +311,13 @@ var CameraTimelinePlugin = (function () {
                 this.rotateMeshDisplacementByExpression(mesh, tmesh.rotationDisplacement, 'z', 'fnz', time);
             }
         }
-    };
-    CameraTimelinePlugin.prototype.rotateMeshDisplacementByExpression = function (mesh, displacement, p, fn, time) {
+    }
+    rotateMeshDisplacementByExpression(mesh, displacement, p, fn, time) {
         if (displacement.expression && displacement.expression[fn] && displacement.expression[fn].evaluate) {
             mesh.rotation[p] = displacement.expression[fn].evaluate({ t: time });
         }
-    };
-    CameraTimelinePlugin.prototype.scaleMesh = function (mesh, tmesh) {
+    }
+    scaleMesh(mesh, tmesh) {
         if (mesh) {
             if (tmesh.scaleDisplacement && tmesh.scaleDisplacement.enabled) {
                 if (!tmesh.scaleDirection) {
@@ -358,8 +352,8 @@ var CameraTimelinePlugin = (function () {
                 }
             }
         }
-    };
-    CameraTimelinePlugin.prototype.scaleMeshByExpression = function (mesh, tmesh, time) {
+    }
+    scaleMeshByExpression(mesh, tmesh, time) {
         if (mesh) {
             if (tmesh.scaleDisplacement && tmesh.scaleDisplacement.enabled) {
                 this.scaleMeshDisplacementByExpression(mesh, tmesh.scaleDisplacement, 'x', 'fnx', time);
@@ -367,12 +361,12 @@ var CameraTimelinePlugin = (function () {
                 this.scaleMeshDisplacementByExpression(mesh, tmesh.scaleDisplacement, 'z', 'fnz', time);
             }
         }
-    };
-    CameraTimelinePlugin.prototype.scaleMeshDisplacementByExpression = function (mesh, displacement, p, fn, time) {
+    }
+    scaleMeshDisplacementByExpression(mesh, displacement, p, fn, time) {
         if (displacement.expression && displacement.expression[fn] && displacement.expression[fn].evaluate) {
             mesh.scale[p] = displacement.expression[fn].evaluate({ t: time });
         }
-    };
-    return CameraTimelinePlugin;
-}());
+    }
+}
 exports.CameraTimelinePlugin = CameraTimelinePlugin;
+//# sourceMappingURL=camera-timeline-plugin.js.map

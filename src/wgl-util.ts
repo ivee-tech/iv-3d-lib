@@ -396,6 +396,9 @@ export class WglUtil {
 
 
         let canvas = document.getElementById(this.cfg.canvasId);
+        while (canvas.firstChild) {
+            canvas.removeChild(canvas.firstChild);
+        }        
         if (this.cfg.useAsciiEffect) {
             this.setAsciiEffect();
         }
@@ -2423,11 +2426,11 @@ export class WglUtil {
         this.mirrorCube.visible = true;
     }
 
-    createCssObject(w: number, h: number, position: THREE.Vector3, rotation: THREE.Vector3, url: string) {
-
+    createCssObject(w: number, h: number, position: THREE.Vector3, rotation: THREE.Vector3, url: string, id?: string) {
+        var id = id ? id : 'iframe1';
         var html = `
-<div style="width:${w}px; height:${h}px;">
-    <iframe src="${url}" width="${w}" height="${h}"></iframe>
+<div id="div${id}" style="width:${w}px; height:${h}px;">
+    <iframe id="${id}" name="${id}" src="${url}" width="${w}" height="${h}"></iframe>
 </div>
         `;
 
@@ -2471,15 +2474,28 @@ export class WglUtil {
         return mesh;
     }
 
-    create3dPage(w, h, position, rotation, url, group?: any) {
+    create3dPage(w, h, position, rotation, url, id?: string, group?: any) {
 
         let plane: THREE.Mesh = this.createCss3DPagePlane(w, h, position, rotation);
 
         this.add(plane, group, true, true);
 
-        var cssObject = this.createCssObject(w, h, position, rotation, url);
+        var cssObject = this.createCssObject(w, h, position, rotation, url, id);
 
         this.cssScene.add(cssObject);
+    }
+
+    refresh3dPage(id: string, url?: string) {
+        if(!url || !id) return;
+        var div = document.getElementById(`div${id}`);
+        if(div && url) {
+            while(div.firstChild) {
+                div.removeChild(div.firstChild);
+            }
+            var w = div.style.width;
+            var h = div.style.height;
+            div.innerHTML = `<iframe id="${id}" name="${id}" src="${url}" width="${w}" height="${h}"></iframe>`;
+        }
     }
 
     setCssRenderer() {

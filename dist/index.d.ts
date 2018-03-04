@@ -27,3 +27,7 @@ export { SimpleDictionary } from './models/simple-dictionary';
 export { Displacement, DisplacementXYZ, Timeline, TimelineMesh, TriggerType, Tween } from './models/timeline';
 export { ErrorService } from './services/error-service';
 export { PUBLIC_DIR, PUBLIC_USER, UserService } from './services/user-service';
+export { MirrorCubePlugin } from './mirror-cube-plugin';
+export { GoogleMapsPlugin } from './google-maps-plugin';
+export { FormInstance } from './models/form-instance';
+export { FormMeta, FormMetaDataSource, FormMetaField, FormMetaValidation, ValidationType, FormMetaView } from './models/form-meta.index';

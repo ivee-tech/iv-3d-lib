@@ -97,7 +97,7 @@ export declare class Iv3dObjectHandler {
     };
     constructor(userSvc: UserService, errorSvc: ErrorService, environment: Iv3dEnvironment);
     getProp(propName: string, props: Iv3dObjectProperty[]): Iv3dObjectProperty;
-    getChild(uuid: string, container: Iv3dObject): Iv3dObject;
+    getChild(uuid: string, container: Iv3dObject): any;
     getCfg(props: Iv3dObjectProperty[]): any;
     getGenCfg<T extends Object>(config: T, props: Iv3dObjectProperty[]): T;
     getLineCfg(props: Iv3dObjectProperty[]): cfg.LineCfg;

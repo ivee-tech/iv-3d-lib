@@ -1,24 +1,24 @@
 "use strict";
-var THREE = require('three');
-var numeral = require('numeral');
-var cfg = require('./wgl-util-cfgs');
-var iv_3d_data_source_1 = require('./models/iv-3d-data-source');
-var iv_3d_object_1 = require('./models/iv-3d-object');
-var DataSourcePlugin = (function () {
-    function DataSourcePlugin(dataSource, objHandler, demo, isPublic) {
+const THREE = require('three');
+const numeral = require('numeral');
+const cfg = require('./wgl-util-cfgs');
+const iv_3d_data_source_1 = require('./models/iv-3d-data-source');
+const iv_3d_object_1 = require('./models/iv-3d-object');
+class DataSourcePlugin {
+    constructor(dataSource, objHandler, demo, isPublic) {
         this.dataSource = dataSource;
         this.objHandler = objHandler;
         this.demo = demo;
         this.isPublic = isPublic;
     }
-    DataSourcePlugin.prototype.init = function () {
-    };
-    DataSourcePlugin.prototype.load = function () {
+    init() {
+    }
+    load() {
         this.loadDataSource();
-    };
-    DataSourcePlugin.prototype.update = function (time) {
-    };
-    DataSourcePlugin.prototype.loadDataSource = function () {
+    }
+    update(time) {
+    }
+    loadDataSource() {
         if (this.dataSource && this.dataSource.items) {
             /*
             if (!this.dataSource.urls || this.dataSource.urls.length === 0) {
@@ -41,33 +41,33 @@ var DataSourcePlugin = (function () {
                 }
             }
             */
-            var valueFormatProp = this.objHandler.getProp('valueFormat', this.data.dataSourceProps);
+            let valueFormatProp = this.objHandler.getProp('valueFormat', this.data.dataSourceProps);
             this.dataSource.valueFormat = valueFormatProp ? valueFormatProp.value : '';
-            var dataItems = this.dataSource.items; //.filter(item => item.value > 1000);
-            var values = dataItems.map(function (item) { return item.value; });
-            var minN = Math.min.apply(Math, values);
+            let dataItems = this.dataSource.items; //.filter(item => item.value > 1000);
+            let values = dataItems.map(item => item.value);
+            let minN = Math.min(...values);
             minN = minN < 0 ? 2 * minN : 0;
-            var maxN = Math.max.apply(Math, values);
+            let maxN = Math.max(...values);
             maxN = maxN > 0 ? 2 * maxN : 0;
             // let titleProp = this.objHandler.getProp('title', this.data.dataSourceProps);
             // this.dataSource.title = titleProp ? titleProp.value : '';
             // let dsTypeProp = this.objHandler.getProp('type', this.data.dataSourceProps);
-            var dsBackgroundColorProp = this.objHandler.getProp('textBackgroundColor', this.data.dataSourceProps);
-            var dsTransparentBackgroundProp = this.objHandler.getProp('transparentBackground', this.data.dataSourceProps);
+            let dsBackgroundColorProp = this.objHandler.getProp('textBackgroundColor', this.data.dataSourceProps);
+            let dsTransparentBackgroundProp = this.objHandler.getProp('transparentBackground', this.data.dataSourceProps);
             if (dsTransparentBackgroundProp && dsTransparentBackgroundProp.value) {
                 this.dataSource.textBackgroundColor = 'transparent';
             }
             else {
                 this.dataSource.textBackgroundColor = dsBackgroundColorProp ? dsBackgroundColorProp.value : '#FFF';
             }
-            var dsTextColorProp = this.objHandler.getProp('textColor', this.data.dataSourceProps);
+            let dsTextColorProp = this.objHandler.getProp('textColor', this.data.dataSourceProps);
             this.dataSource.textColor = dsTextColorProp ? dsTextColorProp.value : '#000';
             this.dataSource.panelCss = this.objHandler.getCssCfg(this.data.dataSourceProps);
-            var pageProp = this.objHandler.getProp('page', this.data.dataSourceProps);
+            let pageProp = this.objHandler.getProp('page', this.data.dataSourceProps);
             if (pageProp && pageProp.value) {
                 this.dataSource.page = pageProp.value;
             }
-            var pageSizeProp = this.objHandler.getProp('pageSize', this.data.dataSourceProps);
+            let pageSizeProp = this.objHandler.getProp('pageSize', this.data.dataSourceProps);
             if (pageSizeProp && pageSizeProp.value) {
                 this.dataSource.pageSize = pageSizeProp.value;
             }
@@ -75,9 +75,8 @@ var DataSourcePlugin = (function () {
             // this.dataSource.drilldownPatternUrl = drilldownPatternUrlProp ? drilldownPatternUrlProp.value : '';
             // this.dataSource.dataSourceIndex = this.currentDataSourceIndex;
             // let dsType = this.dataSource.urls[this.currentDataSourceIndex] ? this.dataSource.urls[this.currentDataSourceIndex].type : Iv3dObjectType.cube;
-            var dsType = this.dataSource.type;
-            for (var _i = 0, dataItems_1 = dataItems; _i < dataItems_1.length; _i++) {
-                var dataItem = dataItems_1[_i];
+            let dsType = this.dataSource.type;
+            for (let dataItem of dataItems) {
                 switch (dsType) {
                     case iv_3d_object_1.Iv3dObjectType.sphere:
                         this.bindDataToSphere(dataItem, '', minN, maxN);
@@ -101,190 +100,189 @@ var DataSourcePlugin = (function () {
                 }
             }
         }
-    };
-    DataSourcePlugin.prototype.bindDataToSphere = function (data, key, minN, maxN) {
-        var label = data.label;
-        var value = data.value;
-        var obj = this.objHandler.createDefaultObject(iv_3d_object_1.Iv3dObjectType.sphere, iv_3d_object_1.Iv3dGeometryType.sphere);
+    }
+    bindDataToSphere(data, key, minN, maxN) {
+        let label = data.label;
+        let value = data.value;
+        let obj = this.objHandler.createDefaultObject(iv_3d_object_1.Iv3dObjectType.sphere, iv_3d_object_1.Iv3dGeometryType.sphere);
         obj.dataSourceItem = data;
         obj.script = 'onMeshClick(mesh)';
         this.data.container.children.push(obj);
-        var radiusProp = this.objHandler.getProp('radius', obj.geometryProps);
-        var v = this.scaleValue(value, minN, maxN);
+        let radiusProp = this.objHandler.getProp('radius', obj.geometryProps);
+        let v = this.scaleValue(value, minN, maxN);
         radiusProp.value = v;
         this.bindDataToObject(obj, data, key);
-    };
-    DataSourcePlugin.prototype.bindDataToCube = function (data, key, minN, maxN) {
-        var label = data.label;
-        var value = data.value;
-        var obj = this.objHandler.createDefaultObject(iv_3d_object_1.Iv3dObjectType.cube, iv_3d_object_1.Iv3dGeometryType.box);
+    }
+    bindDataToCube(data, key, minN, maxN) {
+        let label = data.label;
+        let value = data.value;
+        let obj = this.objHandler.createDefaultObject(iv_3d_object_1.Iv3dObjectType.cube, iv_3d_object_1.Iv3dGeometryType.box);
         obj.dataSourceItem = data;
         obj.script = 'onMeshClick(mesh)';
         this.data.container.children.push(obj);
-        var widthProp = this.objHandler.getProp('width', obj.geometryProps);
-        var heightProp = this.objHandler.getProp('height', obj.geometryProps);
-        var depthProp = this.objHandler.getProp('depth', obj.geometryProps);
-        var v = this.scaleValue(value, minN, maxN);
+        let widthProp = this.objHandler.getProp('width', obj.geometryProps);
+        let heightProp = this.objHandler.getProp('height', obj.geometryProps);
+        let depthProp = this.objHandler.getProp('depth', obj.geometryProps);
+        let v = this.scaleValue(value, minN, maxN);
         widthProp.value = v;
         heightProp.value = v;
         depthProp.value = v;
         this.bindDataToObject(obj, data, key);
-    };
-    DataSourcePlugin.prototype.bindDataToTorus = function (data, key, minN, maxN) {
-        var label = data.label;
-        var value = data.value;
-        var obj = this.objHandler.createDefaultObject(iv_3d_object_1.Iv3dObjectType.torus, iv_3d_object_1.Iv3dGeometryType.torus);
+    }
+    bindDataToTorus(data, key, minN, maxN) {
+        let label = data.label;
+        let value = data.value;
+        let obj = this.objHandler.createDefaultObject(iv_3d_object_1.Iv3dObjectType.torus, iv_3d_object_1.Iv3dGeometryType.torus);
         obj.dataSourceItem = data;
         obj.script = 'onMeshClick(mesh)';
         this.data.container.children.push(obj);
-        var radiusProp = this.objHandler.getProp('radius', obj.geometryProps);
-        var tubeProp = this.objHandler.getProp('tube', obj.geometryProps);
-        var v = this.scaleValue(value, minN, maxN);
+        let radiusProp = this.objHandler.getProp('radius', obj.geometryProps);
+        let tubeProp = this.objHandler.getProp('tube', obj.geometryProps);
+        let v = this.scaleValue(value, minN, maxN);
         radiusProp.value = v;
         tubeProp.value = v / 2;
         this.bindDataToObject(obj, data, key);
-    };
-    DataSourcePlugin.prototype.bindDataToTorusKnot = function (data, key, minN, maxN) {
-        var label = data.label;
-        var value = data.value;
-        var obj = this.objHandler.createDefaultObject(iv_3d_object_1.Iv3dObjectType.torusKnot, iv_3d_object_1.Iv3dGeometryType.torusKnot);
+    }
+    bindDataToTorusKnot(data, key, minN, maxN) {
+        let label = data.label;
+        let value = data.value;
+        let obj = this.objHandler.createDefaultObject(iv_3d_object_1.Iv3dObjectType.torusKnot, iv_3d_object_1.Iv3dGeometryType.torusKnot);
         obj.dataSourceItem = data;
         obj.script = 'onMeshClick(mesh)';
         this.data.container.children.push(obj);
-        var radiusProp = this.objHandler.getProp('radius', obj.geometryProps);
-        var tubeProp = this.objHandler.getProp('tube', obj.geometryProps);
-        var v = this.scaleValue(value, minN, maxN);
+        let radiusProp = this.objHandler.getProp('radius', obj.geometryProps);
+        let tubeProp = this.objHandler.getProp('tube', obj.geometryProps);
+        let v = this.scaleValue(value, minN, maxN);
         radiusProp.value = v;
         tubeProp.value = v / 4;
         this.bindDataToObject(obj, data, key);
-    };
-    DataSourcePlugin.prototype.bindDataToCylinder = function (data, key, minN, maxN) {
-        var label = data.label;
-        var value = data.value;
-        var obj = this.objHandler.createDefaultObject(iv_3d_object_1.Iv3dObjectType.cylinder, iv_3d_object_1.Iv3dGeometryType.cylinder);
+    }
+    bindDataToCylinder(data, key, minN, maxN) {
+        let label = data.label;
+        let value = data.value;
+        let obj = this.objHandler.createDefaultObject(iv_3d_object_1.Iv3dObjectType.cylinder, iv_3d_object_1.Iv3dGeometryType.cylinder);
         obj.dataSourceItem = data;
         obj.script = 'onMeshClick(mesh)';
         this.data.container.children.push(obj);
-        var radiusTopProp = this.objHandler.getProp('radiusTop', obj.geometryProps);
-        var radiusBottomProp = this.objHandler.getProp('radiusBottom', obj.geometryProps);
-        var heightProp = this.objHandler.getProp('height', obj.geometryProps);
-        var v = this.scaleValue(value, minN, maxN);
+        let radiusTopProp = this.objHandler.getProp('radiusTop', obj.geometryProps);
+        let radiusBottomProp = this.objHandler.getProp('radiusBottom', obj.geometryProps);
+        let heightProp = this.objHandler.getProp('height', obj.geometryProps);
+        let v = this.scaleValue(value, minN, maxN);
         radiusTopProp.value = v;
         radiusBottomProp.value = v;
         heightProp.value = v / 2;
         this.bindDataToObject(obj, data, key);
-    };
-    DataSourcePlugin.prototype.bindDataToParticles = function (data, key, minN, maxN) {
-        var label = data.label;
-        var value = data.value;
-        var obj = this.objHandler.createDefaultObject(iv_3d_object_1.Iv3dObjectType.particles, iv_3d_object_1.Iv3dGeometryType.particles);
+    }
+    bindDataToParticles(data, key, minN, maxN) {
+        let label = data.label;
+        let value = data.value;
+        let obj = this.objHandler.createDefaultObject(iv_3d_object_1.Iv3dObjectType.particles, iv_3d_object_1.Iv3dGeometryType.particles);
         obj.dataSourceItem = data;
         obj.script = 'onMeshClick(mesh)';
         this.data.container.children.push(obj);
-        var countProp = this.objHandler.getProp('count', obj.geometryProps);
-        var rangeProp = this.objHandler.getProp('range', obj.geometryProps);
-        var v = this.scaleValue(value, minN, maxN);
-        var stdCountProp = this.objHandler.getProp('count', this.objHandler.particleGeomProps);
-        var count = this.scaleValue(value, stdCountProp.min, stdCountProp.max);
+        let countProp = this.objHandler.getProp('count', obj.geometryProps);
+        let rangeProp = this.objHandler.getProp('range', obj.geometryProps);
+        let v = this.scaleValue(value, minN, maxN);
+        let stdCountProp = this.objHandler.getProp('count', this.objHandler.particleGeomProps);
+        let count = this.scaleValue(value, stdCountProp.min, stdCountProp.max);
         countProp.value = value;
         rangeProp.value = v;
         this.bindDataToObject(obj, data, key);
-    };
-    DataSourcePlugin.prototype.scaleValue = function (value, minN, maxN) {
-        var nearProp = this.objHandler.getProp('near', this.data.cameraProps);
-        var farProp = this.objHandler.getProp('far', this.data.cameraProps);
-        var fovProp = this.objHandler.getProp('fov', this.data.cameraProps);
+    }
+    scaleValue(value, minN, maxN) {
+        let nearProp = this.objHandler.getProp('near', this.data.cameraProps);
+        let farProp = this.objHandler.getProp('far', this.data.cameraProps);
+        let fovProp = this.objHandler.getProp('fov', this.data.cameraProps);
         if (minN === maxN)
             minN = 0;
-        var min = minN;
-        var max = maxN;
-        var a = nearProp.value / fovProp.value;
-        var b = farProp.value / fovProp.value;
-        var v = (b - a) * (value - min) / (max - min) + a;
+        let min = minN;
+        let max = maxN;
+        let a = nearProp.value / fovProp.value;
+        let b = farProp.value / fovProp.value;
+        let v = (b - a) * (value - min) / (max - min) + a;
         return v;
-    };
-    DataSourcePlugin.prototype.interpolate = function (x, minN, maxN) {
+    }
+    interpolate(x, minN, maxN) {
         return minN * (1 - x) + maxN * x;
-    };
-    DataSourcePlugin.prototype.uninterpolate = function (x, a, b) {
-        var factor = (b - a) != 0 ? b - a : 1 / b;
+    }
+    uninterpolate(x, a, b) {
+        let factor = (b - a) != 0 ? b - a : 1 / b;
         return (x - a) / factor;
-    };
-    DataSourcePlugin.prototype.scaleValueXYZ = function (x, minN, maxN) {
-        var nearProp = this.objHandler.getProp('near', this.data.cameraProps);
-        var farProp = this.objHandler.getProp('far', this.data.cameraProps);
-        var fixMin = 1;
-        var fixMax = 1000000;
-        var min = cfg.U.isEmpty(minN) ? fixMin : (minN < fixMin ? minN : fixMin);
-        var max = cfg.U.isEmpty(maxN) ? fixMax : (maxN > fixMax ? maxN : fixMax);
-        var a = nearProp.value;
-        var b = farProp.value;
+    }
+    scaleValueXYZ(x, minN, maxN) {
+        let nearProp = this.objHandler.getProp('near', this.data.cameraProps);
+        let farProp = this.objHandler.getProp('far', this.data.cameraProps);
+        let fixMin = 1;
+        let fixMax = 1000000;
+        let min = cfg.U.isEmpty(minN) ? fixMin : (minN < fixMin ? minN : fixMin);
+        let max = cfg.U.isEmpty(maxN) ? fixMax : (maxN > fixMax ? maxN : fixMax);
+        let a = nearProp.value;
+        let b = farProp.value;
         return this.interpolate(this.uninterpolate(x, a, b), min, max);
-    };
-    DataSourcePlugin.prototype.bindDataToObject = function (obj, data, key) {
-        var _this = this;
-        var label = data.label;
-        var value = data.value;
-        var useCanvasProp = this.objHandler.getProp('useCanvas', obj.materialProps);
+    }
+    bindDataToObject(obj, data, key) {
+        let label = data.label;
+        let value = data.value;
+        let useCanvasProp = this.objHandler.getProp('useCanvas', obj.materialProps);
         useCanvasProp.value = false;
-        var textProp = this.objHandler.getProp('text', obj.materialProps);
+        let textProp = this.objHandler.getProp('text', obj.materialProps);
         textProp.value = value;
-        var colorProp = this.objHandler.getProp('color', obj.materialProps);
+        let colorProp = this.objHandler.getProp('color', obj.materialProps);
         colorProp.value = '#' + (Math.random() * 0xFFFFFF).toString(16);
-        var matTypeProp = this.objHandler.getProp('type', obj.materialProps);
+        let matTypeProp = this.objHandler.getProp('type', obj.materialProps);
         if (obj.meshType === iv_3d_object_1.Iv3dObjectType.particles) {
             matTypeProp.value = 'PointsMaterial';
         }
         else {
             matTypeProp.value = 'MeshPhongMaterial';
         }
-        this.objHandler.loadObject(obj, this.w, this.mainGroup, this.demo, this.isPublic, key, function (threeObj) {
+        this.objHandler.loadObject(obj, this.w, this.mainGroup, this.demo, this.isPublic, key, (threeObj) => {
             var r = Math.random();
             var vx = r > 0.5 ? +1 : -1;
             r = Math.random();
             var vy = r < 0.5 ? +1 : -1;
             r = Math.random();
             var vz = r > 0.5 ? +1 : -1;
-            var aspectProp = _this.objHandler.getProp('aspect', _this.data.cameraProps);
-            var fovProp = _this.objHandler.getProp('fov', _this.data.cameraProps);
-            var q = aspectProp.value * fovProp.value;
+            let aspectProp = this.objHandler.getProp('aspect', this.data.cameraProps);
+            let fovProp = this.objHandler.getProp('fov', this.data.cameraProps);
+            let q = aspectProp.value * fovProp.value;
             var qX = 3 * q, qY = 2 * q, qZ = 3 * q;
             var px = Math.random() * qX * vx, py = Math.random() * qY * vy, pz = Math.random() * qZ * vz;
             threeObj.position.set(px, py, pz);
             //threeObj.geometry.computeBoundingBox();
             //let bbox = threeObj.geometry.boundingBox;
             //let sy = py < 0 ? bbox.max.y + 10 : bbox.min.y + 10;
-            var bbox = new THREE.Box3().setFromObject(threeObj);
-            var sx = bbox.max.x;
-            var sy = bbox.max.y + 10;
-            var sz = bbox.max.z;
-            var spriteCfg = { color: 0x0, position: { x: px, y: sy, z: pz } };
-            var sValue = '';
-            if (_this.dataSource.valueFormat === iv_3d_data_source_1.Iv3dDataSourceValueFormat.currency)
-                sValue = "" + numeral(data.value).format('($0,0.00)');
-            else if (_this.dataSource.valueFormat === iv_3d_data_source_1.Iv3dDataSourceValueFormat.number)
-                sValue = "" + numeral(data.value).format('(0,0.00)');
+            let bbox = new THREE.Box3().setFromObject(threeObj);
+            let sx = bbox.max.x;
+            let sy = bbox.max.y + 10;
+            let sz = bbox.max.z;
+            let spriteCfg = { color: 0x0, position: { x: px, y: sy, z: pz } };
+            let sValue = '';
+            if (this.dataSource.valueFormat === iv_3d_data_source_1.Iv3dDataSourceValueFormat.currency)
+                sValue = `${numeral(data.value).format('($0,0.00)')}`;
+            else if (this.dataSource.valueFormat === iv_3d_data_source_1.Iv3dDataSourceValueFormat.number)
+                sValue = `${numeral(data.value).format('(0,0.00)')}`;
             else
-                sValue = "" + data.value;
-            var label = data.label + ": " + sValue;
-            var textWidth = label.length * 10;
-            var textHeight = 20;
-            var fontSize = 12;
-            var textureCfg = {
+                sValue = `${data.value}`;
+            let label = `${data.label}: ${sValue}`;
+            let textWidth = label.length * 10;
+            let textHeight = 20;
+            let fontSize = 12;
+            let textureCfg = {
                 canvas: {
                     text: label,
                     width: textWidth, height: textHeight,
-                    backgroundColor: _this.dataSource.textBackgroundColor, textColor: _this.dataSource.textColor, fontSize: fontSize, font: fontSize + "pt Arial", textAlign: 'center', textBaseline: 'middle'
+                    backgroundColor: this.dataSource.textBackgroundColor, textColor: this.dataSource.textColor, fontSize: fontSize, font: `${fontSize}pt Arial`, textAlign: 'center', textBaseline: 'middle'
                 }
             };
-            var spriteTextObj = _this.w.addTextSprite(spriteCfg, textureCfg, _this.mainGroup);
+            let spriteTextObj = this.w.addTextSprite(spriteCfg, textureCfg, this.mainGroup);
             spriteTextObj.objectId = threeObj.uuid;
             threeObj.spriteId = spriteTextObj.uuid;
             threeObj.spriteParentId = spriteTextObj.parent.uuid;
             // sprite.scale.set(20, 10, 10);
-            var attemptsCount = 10;
-            var attempt = 0;
-            while (attempt < attemptsCount && _this.w.checkObjectOverlap(threeObj, _this.mainGroup.children)) {
+            let attemptsCount = 10;
+            let attempt = 0;
+            while (attempt < attemptsCount && this.w.checkObjectOverlap(threeObj, this.mainGroup.children)) {
                 px = Math.random() * qX * vx;
                 py = Math.random() * qY * vy;
                 pz = Math.random() * qZ * vz;
@@ -292,38 +290,37 @@ var DataSourcePlugin = (function () {
                 //threeObj.geometry.computeBoundingBox();
                 //let bbox = threeObj.geometry.boundingBox;
                 //let sy = py < 0 ? bbox.max.y + 10 : bbox.min.y + 10;
-                var bbox_1 = new THREE.Box3().setFromObject(threeObj);
-                var sx_1 = bbox_1.max.x;
-                var sy_1 = bbox_1.max.y + 10;
-                var sz_1 = bbox_1.max.z;
-                spriteTextObj.position.set(px, sy_1, pz);
+                let bbox = new THREE.Box3().setFromObject(threeObj);
+                let sx = bbox.max.x;
+                let sy = bbox.max.y + 10;
+                let sz = bbox.max.z;
+                spriteTextObj.position.set(px, sy, pz);
                 attempt++;
             }
         });
-    };
-    DataSourcePlugin.prototype.filterDataSourceItems = function (event) {
-        var filterText = event.filterText;
-        var minVal = event.minVal;
-        var maxVal = event.maxVal;
-        var filteredItems = event.filteredItems;
-        for (var _i = 0, _a = this.mainGroup.children; _i < _a.length; _i++) {
-            var threeObj = _a[_i];
-            var obj = threeObj.userData;
+    }
+    filterDataSourceItems(event) {
+        let filterText = event.filterText;
+        let minVal = event.minVal;
+        let maxVal = event.maxVal;
+        let filteredItems = event.filteredItems;
+        for (let threeObj of this.mainGroup.children) {
+            let obj = threeObj.userData;
             if (obj) {
-                var item = obj.dataSourceItem;
+                let item = obj.dataSourceItem;
                 threeObj.visible = (item && filteredItems.indexOf(item) >= 0);
-                var spriteParentObj = this.find3dObjectById(threeObj.spriteParentId);
+                let spriteParentObj = this.find3dObjectById(threeObj.spriteParentId);
                 if (spriteParentObj) {
                     spriteParentObj.visible = threeObj.visible;
                     spriteParentObj.children[0].visible = threeObj.visible;
                 }
             }
         }
-    };
-    DataSourcePlugin.prototype.find3dObjectById = function (uuid) {
-        var obj = this.mainGroup.children.find(function (item) { return item.uuid === uuid; });
+    }
+    find3dObjectById(uuid) {
+        let obj = this.mainGroup.children.find(item => item.uuid === uuid);
         return obj;
-    };
-    return DataSourcePlugin;
-}());
+    }
+}
 exports.DataSourcePlugin = DataSourcePlugin;
+//# sourceMappingURL=data-source-plugin.js.map

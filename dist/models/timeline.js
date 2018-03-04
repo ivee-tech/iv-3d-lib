@@ -1,7 +1,7 @@
 "use strict";
-var wgl_util_cfgs_1 = require('../wgl-util-cfgs');
-var Timeline = (function () {
-    function Timeline() {
+const wgl_util_cfgs_1 = require('../wgl-util-cfgs');
+class Timeline {
+    constructor() {
         this.meshes = [];
         /*
         private _enabled: boolean = true;
@@ -18,11 +18,10 @@ var Timeline = (function () {
         this.cameraDirection = { x: 1, y: 1, z: 1 };
         this.meshCameraVerticesDisplacement = new DisplacementXYZ();
     }
-    return Timeline;
-}());
+}
 exports.Timeline = Timeline;
-var Displacement = (function () {
-    function Displacement() {
+class Displacement {
+    constructor() {
         this.displacement = 0;
         this.min = 0;
         this.max = 0;
@@ -30,11 +29,10 @@ var Displacement = (function () {
         this.expression = new wgl_util_cfgs_1.Expr();
         this.useCurrent = false;
     }
-    return Displacement;
-}());
+}
 exports.Displacement = Displacement;
-var DisplacementXYZ = (function () {
-    function DisplacementXYZ() {
+class DisplacementXYZ {
+    constructor() {
         this.displacement = new wgl_util_cfgs_1.XYZ();
         this.min = new wgl_util_cfgs_1.XYZ();
         this.max = new wgl_util_cfgs_1.XYZ();
@@ -47,11 +45,10 @@ var DisplacementXYZ = (function () {
         this.runtimeReverse = false; // flag used in tweening; when true the tween should execute in reverse (reset the tween properties to the original values)
         this.script = '';
     }
-    return DisplacementXYZ;
-}());
+}
 exports.DisplacementXYZ = DisplacementXYZ;
-var TimelineMesh = (function () {
-    function TimelineMesh() {
+class TimelineMesh {
+    constructor() {
         this.positionDisplacement = new DisplacementXYZ();
         this.positionDirection = new wgl_util_cfgs_1.XYZ(1, 1, 1);
         this.rotationDisplacement = new DisplacementXYZ();
@@ -64,18 +61,16 @@ var TimelineMesh = (function () {
         this.runtimeTweenReverseMouseDown = false;
         this.runtimeTweenReverseMouseUp = false;
     }
-    return TimelineMesh;
-}());
+}
 exports.TimelineMesh = TimelineMesh;
-var Tween = (function () {
-    function Tween() {
+class Tween {
+    constructor() {
         this.positionDisplacement = new DisplacementXYZ();
         this.rotationDisplacement = new DisplacementXYZ();
         this.scaleDisplacement = new DisplacementXYZ();
         this.colorDisplacement = new DisplacementXYZ();
     }
-    return Tween;
-}());
+}
 exports.Tween = Tween;
 (function (TriggerType) {
     TriggerType[TriggerType["none"] = 'none'] = "none";
@@ -84,3 +79,4 @@ exports.Tween = Tween;
     TriggerType[TriggerType["onMouseDown"] = 'onMouseDown'] = "onMouseDown";
 })(exports.TriggerType || (exports.TriggerType = {}));
 var TriggerType = exports.TriggerType;
+//# sourceMappingURL=timeline.js.map

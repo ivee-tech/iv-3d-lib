@@ -376,6 +376,7 @@ export class CssCfg {
     width: string;
     height: string;
     opacity: string;
+    'z-index': string;
 }
 
 export class SpriteCfg {

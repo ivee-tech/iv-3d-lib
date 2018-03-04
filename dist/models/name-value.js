@@ -1,7 +1,5 @@
 "use strict";
-var NameValue = (function () {
-    function NameValue() {
-    }
-    return NameValue;
-}());
+class NameValue {
+}
 exports.NameValue = NameValue;
+//# sourceMappingURL=name-value.js.map

@@ -1,7 +1,7 @@
 "use strict";
-var iv_3d_object_1 = require('./iv-3d-object');
-var DataModel = (function () {
-    function DataModel() {
+const iv_3d_object_1 = require('./iv-3d-object');
+class DataModel {
+    constructor() {
         this.container = new iv_3d_object_1.Iv3dObject();
         this.lights = [];
         this.timelines = [];
@@ -19,6 +19,6 @@ var DataModel = (function () {
         this.dataSourceProps = [];
         this.plugins = [];
     }
-    return DataModel;
-}());
+}
 exports.DataModel = DataModel;
+//# sourceMappingURL=data-model.js.map

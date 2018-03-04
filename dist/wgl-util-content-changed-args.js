@@ -1,10 +1,9 @@
 "use strict";
-var WglUtilContentChangedArgs = (function () {
-    function WglUtilContentChangedArgs() {
+class WglUtilContentChangedArgs {
+    constructor() {
         this.type = ContentChangedType.none;
     }
-    return WglUtilContentChangedArgs;
-}());
+}
 exports.WglUtilContentChangedArgs = WglUtilContentChangedArgs;
 (function (ContentChangedType) {
     ContentChangedType[ContentChangedType["none"] = 0] = "none";
@@ -14,3 +13,4 @@ exports.WglUtilContentChangedArgs = WglUtilContentChangedArgs;
     ContentChangedType[ContentChangedType["clear"] = 4] = "clear";
 })(exports.ContentChangedType || (exports.ContentChangedType = {}));
 var ContentChangedType = exports.ContentChangedType;
+//# sourceMappingURL=wgl-util-content-changed-args.js.map

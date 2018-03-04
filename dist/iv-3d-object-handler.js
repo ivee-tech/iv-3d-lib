@@ -1,17 +1,17 @@
 "use strict";
-var THREE = require('three');
-var TWEEN = require('tween.js');
-var parser = require('expr-eval');
-var iv_3d_object_1 = require('./models/iv-3d-object');
-var cfg = require('./wgl-util-cfgs');
-var k_gen_1 = require('./models/k-gen');
-var wgl_util_1 = require('./wgl-util');
-var iv_3d_light_1 = require('./models/iv-3d-light');
-var user_service_1 = require('./services/user-service');
-var iv_3d_shader_1 = require('./models/iv-3d-shader');
-var iv_3d_data_source_1 = require('./models/iv-3d-data-source');
-var Iv3dObjectHandler = (function () {
-    function Iv3dObjectHandler(userSvc, errorSvc, environment) {
+const THREE = require('three');
+const TWEEN = require('tween.js');
+const parser = require('expr-eval');
+const iv_3d_object_1 = require('./models/iv-3d-object');
+const cfg = require('./wgl-util-cfgs');
+const k_gen_1 = require('./models/k-gen');
+const wgl_util_1 = require('./wgl-util');
+const iv_3d_light_1 = require('./models/iv-3d-light');
+const user_service_1 = require('./services/user-service');
+const iv_3d_shader_1 = require('./models/iv-3d-shader');
+const iv_3d_data_source_1 = require('./models/iv-3d-data-source');
+class Iv3dObjectHandler {
+    constructor(userSvc, errorSvc, environment) {
         this.userSvc = userSvc;
         this.errorSvc = errorSvc;
         this.environment = environment;
@@ -448,33 +448,32 @@ var Iv3dObjectHandler = (function () {
             { prop1: null, prop2: 'background-color', type: 'string', label: 'Background color', value: this.cssCfg['background-color'] },
         ];
         this.errorSvc.useAlertForErrors = this.environment.useAlertForErrors;
-        for (var p in iv_3d_object_1.Iv3dObjectType) {
+        for (let p in iv_3d_object_1.Iv3dObjectType) {
             this.objectTypes.push(p);
         }
-        for (var p in iv_3d_data_source_1.Iv3dDataSourceValueFormat) {
+        for (let p in iv_3d_data_source_1.Iv3dDataSourceValueFormat) {
             this.valueFormats.push(p);
         }
     }
-    Iv3dObjectHandler.prototype.getProp = function (propName, props) {
-        return props.find(function (item) { return item.prop2 === propName; });
-    };
-    Iv3dObjectHandler.prototype.getChild = function (uuid, container) {
-        return container.children.find(function (item) { return item.uuid === uuid; });
-    };
-    Iv3dObjectHandler.prototype.getCfg = function (props) {
-        var cfg = {};
-        for (var _i = 0, props_1 = props; _i < props_1.length; _i++) {
-            var p = props_1[_i];
+    getProp(propName, props) {
+        return props.find(item => item.prop2 === propName);
+    }
+    getChild(uuid, container) {
+        return container.children.find(item => item.uuid === uuid);
+    }
+    getCfg(props) {
+        let cfg = {};
+        for (let p of props) {
             cfg[p.prop2] = p.value;
         }
         return cfg;
-    };
-    Iv3dObjectHandler.prototype.getGenCfg = function (config, props) {
-        var c = this.getCfg(props);
-        for (var p1 in config) {
+    }
+    getGenCfg(config, props) {
+        let c = this.getCfg(props);
+        for (let p1 in config) {
             // if (typeof (config[p1]) === 'object' && config[p1].length > 0) {
             if (config[p1] && typeof (config[p1]) === 'object' && Object.keys(config[p1]).length > 0) {
-                for (var p2 in config[p1]) {
+                for (let p2 in config[p1]) {
                     if (!cfg.U.isEmpty(c[p2])) {
                         config[p1][p2] = c[p2];
                     }
@@ -487,92 +486,92 @@ var Iv3dObjectHandler = (function () {
             }
         }
         return config;
-    };
-    Iv3dObjectHandler.prototype.getLineCfg = function (props) {
-        var config = new cfg.LineCfg();
+    }
+    getLineCfg(props) {
+        let config = new cfg.LineCfg();
         return this.getGenCfg(config, props);
-    };
-    Iv3dObjectHandler.prototype.getPlaneCfg = function (props) {
-        var config = new cfg.PlaneCfg();
+    }
+    getPlaneCfg(props) {
+        let config = new cfg.PlaneCfg();
         return this.getGenCfg(config, props);
-    };
-    Iv3dObjectHandler.prototype.getCircleCfg = function (props) {
-        var config = new cfg.CircleCfg();
+    }
+    getCircleCfg(props) {
+        let config = new cfg.CircleCfg();
         return this.getGenCfg(config, props);
-    };
-    Iv3dObjectHandler.prototype.getCubeCfg = function (props) {
-        var config = new cfg.CubeCfg();
+    }
+    getCubeCfg(props) {
+        let config = new cfg.CubeCfg();
         return this.getGenCfg(config, props);
-    };
-    Iv3dObjectHandler.prototype.getSphereCfg = function (props) {
-        var config = new cfg.SphereCfg();
+    }
+    getSphereCfg(props) {
+        let config = new cfg.SphereCfg();
         return this.getGenCfg(config, props);
-    };
-    Iv3dObjectHandler.prototype.getCylinderCfg = function (props) {
-        var config = new cfg.CylinderCfg();
+    }
+    getCylinderCfg(props) {
+        let config = new cfg.CylinderCfg();
         return this.getGenCfg(config, props);
-    };
-    Iv3dObjectHandler.prototype.getTorusCfg = function (props) {
-        var config = new cfg.TorusCfg();
+    }
+    getTorusCfg(props) {
+        let config = new cfg.TorusCfg();
         return this.getGenCfg(config, props);
-    };
-    Iv3dObjectHandler.prototype.getTorusKnotCfg = function (props) {
-        var config = new cfg.TorusKnotCfg();
+    }
+    getTorusKnotCfg(props) {
+        let config = new cfg.TorusKnotCfg();
         return this.getGenCfg(config, props);
-    };
-    Iv3dObjectHandler.prototype.getTextCfg = function (props) {
-        var config = new cfg.TextCfg();
+    }
+    getTextCfg(props) {
+        let config = new cfg.TextCfg();
         return this.getGenCfg(config, props);
-    };
-    Iv3dObjectHandler.prototype.getParticleCfg = function (props) {
-        var config = new cfg.ParticleCfg();
+    }
+    getParticleCfg(props) {
+        let config = new cfg.ParticleCfg();
         return this.getGenCfg(config, props);
-    };
-    Iv3dObjectHandler.prototype.getPointLightCfg = function (props) {
-        var config = new cfg.PointLightCfg();
+    }
+    getPointLightCfg(props) {
+        let config = new cfg.PointLightCfg();
         return this.getGenCfg(config, props);
-    };
-    Iv3dObjectHandler.prototype.getDirLightCfg = function (props) {
-        var config = new cfg.DirLightCfg();
+    }
+    getDirLightCfg(props) {
+        let config = new cfg.DirLightCfg();
         return this.getGenCfg(config, props);
-    };
-    Iv3dObjectHandler.prototype.getHemishphereLightCfg = function (props) {
-        var config = new cfg.HempisphereLightCfg();
+    }
+    getHemishphereLightCfg(props) {
+        let config = new cfg.HempisphereLightCfg();
         return this.getGenCfg(config, props);
-    };
-    Iv3dObjectHandler.prototype.getSpotLightCfg = function (props) {
-        var config = new cfg.SpotLightCfg();
+    }
+    getSpotLightCfg(props) {
+        let config = new cfg.SpotLightCfg();
         return this.getGenCfg(config, props);
-    };
-    Iv3dObjectHandler.prototype.getCameraCfg = function (props) {
-        var config = new cfg.CameraCfg();
+    }
+    getCameraCfg(props) {
+        let config = new cfg.CameraCfg();
         return this.getGenCfg(config, props);
-    };
-    Iv3dObjectHandler.prototype.getSceneCfg = function (props) {
-        var config = new cfg.SceneRuntimeCfg();
+    }
+    getSceneCfg(props) {
+        let config = new cfg.SceneRuntimeCfg();
         return this.getGenCfg(config, props);
-    };
-    Iv3dObjectHandler.prototype.getAudioCfg = function (props) {
-        var config = Object.assign({}, this.audioCfg);
+    }
+    getAudioCfg(props) {
+        let config = Object.assign({}, this.audioCfg);
         return this.getGenCfg(config, props);
-    };
-    Iv3dObjectHandler.prototype.getCssCfg = function (props) {
-        var config = Object.assign({}, this.cssCfg);
+    }
+    getCssCfg(props) {
+        let config = Object.assign({}, this.cssCfg);
         return this.getGenCfg(config, props);
-    };
-    Iv3dObjectHandler.prototype.getTextureCfg = function (props) {
-        var config = new cfg.TextureCfg();
+    }
+    getTextureCfg(props) {
+        let config = new cfg.TextureCfg();
         return this.getGenCfg(config, props);
-    };
-    Iv3dObjectHandler.prototype.setCfgProps = function (config, props, excludeProps) {
-        for (var p1 in config) {
+    }
+    setCfgProps(config, props, excludeProps) {
+        for (let p1 in config) {
             if (excludeProps && excludeProps.indexOf(p1) >= 0)
                 continue;
             // if (typeof (config[p1]) === 'object' && config[p1].length > 0) {
             if (config[p1] && typeof (config[p1]) === 'object' && Object.keys(config[p1]).length > 0) {
-                for (var p2 in config[p1]) {
+                for (let p2 in config[p1]) {
                     if (!cfg.U.isEmpty(config[p1][p2])) {
-                        var prop = this.getProp(p2, props);
+                        let prop = this.getProp(p2, props);
                         if (prop) {
                             prop.value = config[p1][p2];
                         }
@@ -581,75 +580,74 @@ var Iv3dObjectHandler = (function () {
             }
             else {
                 if (!cfg.U.isEmpty(config[p1])) {
-                    var prop = this.getProp(p1, props);
+                    let prop = this.getProp(p1, props);
                     if (prop) {
                         prop.value = config[p1];
                     }
                 }
             }
         }
-    };
-    Iv3dObjectHandler.prototype.setLineCfgProps = function (config, props) {
+    }
+    setLineCfgProps(config, props) {
         this.setCfgProps(config, props);
-    };
-    Iv3dObjectHandler.prototype.setPlaneCfgProps = function (config, props) {
+    }
+    setPlaneCfgProps(config, props) {
         this.setCfgProps(config, props);
-    };
-    Iv3dObjectHandler.prototype.setCircleCfgProps = function (config, props) {
+    }
+    setCircleCfgProps(config, props) {
         this.setCfgProps(config, props);
-    };
-    Iv3dObjectHandler.prototype.setCubeCfgProps = function (config, props) {
+    }
+    setCubeCfgProps(config, props) {
         this.setCfgProps(config, props);
-    };
-    Iv3dObjectHandler.prototype.setSphereCfgProps = function (config, props) {
+    }
+    setSphereCfgProps(config, props) {
         this.setCfgProps(config, props);
-    };
-    Iv3dObjectHandler.prototype.setCylinderCfgProps = function (config, props) {
+    }
+    setCylinderCfgProps(config, props) {
         this.setCfgProps(config, props);
-    };
-    Iv3dObjectHandler.prototype.setTorusCfgProps = function (config, props) {
+    }
+    setTorusCfgProps(config, props) {
         this.setCfgProps(config, props);
-    };
-    Iv3dObjectHandler.prototype.setTorusKnotCfgProps = function (config, props) {
+    }
+    setTorusKnotCfgProps(config, props) {
         this.setCfgProps(config, props);
-    };
-    Iv3dObjectHandler.prototype.setTextCfgProps = function (config, props) {
+    }
+    setTextCfgProps(config, props) {
         this.setCfgProps(config, props, ['textMesh', 'textMeshMirror', 'textMaterial', 'font', 'geometry']);
-    };
-    Iv3dObjectHandler.prototype.setParticleCfgProps = function (config, props) {
+    }
+    setParticleCfgProps(config, props) {
         this.setCfgProps(config, props);
-    };
-    Iv3dObjectHandler.prototype.setPointLightCfgProps = function (config, props) {
+    }
+    setPointLightCfgProps(config, props) {
         this.setCfgProps(config, props, ['helper']);
-    };
-    Iv3dObjectHandler.prototype.setDirLightCfgProps = function (config, props) {
+    }
+    setDirLightCfgProps(config, props) {
         this.setCfgProps(config, props, ['helper']);
-    };
-    Iv3dObjectHandler.prototype.setHempisphereLightCfgProps = function (config, props) {
+    }
+    setHempisphereLightCfgProps(config, props) {
         this.setCfgProps(config, props, ['helper']);
-    };
-    Iv3dObjectHandler.prototype.setSpotLightCfgProps = function (config, props) {
+    }
+    setSpotLightCfgProps(config, props) {
         this.setCfgProps(config, props, ['helper']);
-    };
-    Iv3dObjectHandler.prototype.setCameraCfgProps = function (config, props) {
+    }
+    setCameraCfgProps(config, props) {
         this.setCfgProps(config, props);
-    };
-    Iv3dObjectHandler.prototype.setSceneCfgProps = function (config, props) {
+    }
+    setSceneCfgProps(config, props) {
         this.setCfgProps(config, props);
-    };
-    Iv3dObjectHandler.prototype.setAudioCfgProps = function (config, props) {
+    }
+    setAudioCfgProps(config, props) {
         this.setCfgProps(config, props);
-    };
-    Iv3dObjectHandler.prototype.setTextureCfgProps = function (config, props) {
+    }
+    setTextureCfgProps(config, props) {
         this.setCfgProps(config, props);
-    };
-    Iv3dObjectHandler.prototype.setCssCfgProps = function (config, props) {
+    }
+    setCssCfgProps(config, props) {
         this.setCfgProps(config, props);
-    };
-    Iv3dObjectHandler.prototype.loadObject = function (obj, w, mainGroup, demo, isPublic, key, threeObjCallback) {
-        var _this = this;
-        var threeObj;
-        var geom, mat;
+    }
+    loadObject(obj, w, mainGroup, demo, isPublic, key, threeObjCallback) {
+        let threeObj;
+        let geom, mat;
         switch (obj.meshType) {
             case iv_3d_object_1.Iv3dObjectType.line:
                 geom = this.genGeom(iv_3d_object_1.Iv3dGeometryType.line, obj.geometryProps, w);
@@ -689,24 +687,24 @@ var Iv3dObjectHandler = (function () {
                 this.genObjectWithMat(obj, geom, mainGroup, w, demo, isPublic, key, threeObjCallback);
                 break;
             case iv_3d_object_1.Iv3dObjectType.text:
-                var fontName = 'helvetiker';
-                var weight = 'regular';
-                var fontNameProp = obj.geometryProps.find(function (p) { return p.prop2 === 'fontName'; });
+                let fontName = 'helvetiker';
+                let weight = 'regular';
+                let fontNameProp = obj.geometryProps.find(p => p.prop2 === 'fontName');
                 if (fontNameProp) {
                     fontName = fontNameProp.value;
                 }
-                var weightProp = obj.geometryProps.find(function (p) { return p.prop2 === 'weight'; });
+                let weightProp = obj.geometryProps.find(p => p.prop2 === 'weight');
                 if (weightProp) {
                     weight = weightProp.value;
                 }
-                var loader = new THREE.FontLoader();
-                loader.load(this.environment.assetsRelUrl + "libs/threejs/fonts/" + fontName + "_" + weight + ".typeface.json", function (response) {
-                    var props = obj.geometryProps;
-                    var fontProp = props.find(function (p) { return p.prop2 === 'font'; });
+                let loader = new THREE.FontLoader();
+                loader.load(`${this.environment.assetsRelUrl}libs/threejs/fonts/${fontName}_${weight}.typeface.json`, (response) => {
+                    let props = obj.geometryProps;
+                    let fontProp = props.find(p => p.prop2 === 'font');
                     fontProp.value = response;
                     // props.push(<Iv3dObjectProperty>{ prop1: null, prop2: 'font', type: 'object', label: 'Font data', value: response, hidden: true });
-                    geom = _this.genGeom(iv_3d_object_1.Iv3dGeometryType.text, props, w);
-                    _this.genObjectWithMat(obj, geom, mainGroup, w, demo, isPublic, key, threeObjCallback);
+                    geom = this.genGeom(iv_3d_object_1.Iv3dGeometryType.text, props, w);
+                    this.genObjectWithMat(obj, geom, mainGroup, w, demo, isPublic, key, threeObjCallback);
                 });
                 break;
             case iv_3d_object_1.Iv3dObjectType.particles:
@@ -716,17 +714,16 @@ var Iv3dObjectHandler = (function () {
             default:
                 break;
         }
-    };
-    Iv3dObjectHandler.prototype.createShaderMaterial = function (shader, w, demo, isPublic, key) {
-        var uniforms = {};
-        for (var _i = 0, _a = shader.uniforms.filter(function (item) { return item.type !== iv_3d_shader_1.Iv3dUniformType.t; }); _i < _a.length; _i++) {
-            var u = _a[_i];
+    }
+    createShaderMaterial(shader, w, demo, isPublic, key) {
+        let uniforms = {};
+        for (let u of shader.uniforms.filter(item => item.type !== iv_3d_shader_1.Iv3dUniformType.t)) {
             uniforms[u.name] = { type: u.type, value: u.value };
         }
         if (shader.timeExpr && shader.timeExpr.expression) {
             shader.timeExpr.fn = this.oParser.parse(shader.timeExpr.expression);
         }
-        var shaderMaterial = new THREE.ShaderMaterial({
+        let shaderMaterial = new THREE.ShaderMaterial({
             uniforms: uniforms,
             vertexShader: shader.vertexProgram,
             fragmentShader: shader.fragmentProgram
@@ -738,13 +735,12 @@ var Iv3dObjectHandler = (function () {
             uniforms['resolution'].value.x = window.innerWidth;
             uniforms['resolution'].value.y = window.innerHeight;
         }
-        for (var _b = 0, _c = shader.uniforms.filter(function (item) { return item.type === iv_3d_shader_1.Iv3dUniformType.t; }); _b < _c.length; _b++) {
-            var u = _c[_b];
-            var imgFile = u.value;
-            var texture = this.loadTexture(imgFile, w, demo, isPublic, key, null);
+        for (let u of shader.uniforms.filter(item => item.type === iv_3d_shader_1.Iv3dUniformType.t)) {
+            let imgFile = u.value;
+            let texture = this.loadTexture(imgFile, w, demo, isPublic, key, null);
             uniforms[u.name] = { type: u.type, value: texture };
         }
-        for (var prop in uniforms) {
+        for (let prop in uniforms) {
             switch (uniforms[prop].type) {
                 case iv_3d_shader_1.Iv3dUniformType.v3:
                     uniforms[prop].value = new THREE.Vector3(0, 0, 0);
@@ -757,18 +753,18 @@ var Iv3dObjectHandler = (function () {
             }
         }
         return shaderMaterial;
-    };
-    Iv3dObjectHandler.prototype.attachShader = function (shader, obj, mesh, w, demo, isPublic, key) {
+    }
+    attachShader(shader, obj, mesh, w, demo, isPublic, key) {
         if (!mesh)
             return;
         if (!shader)
             return;
-        var shaderMaterial = this.createShaderMaterial(shader, w, demo, isPublic, key);
+        let shaderMaterial = this.createShaderMaterial(shader, w, demo, isPublic, key);
         mesh.material = shaderMaterial;
-    };
-    Iv3dObjectHandler.prototype.loadLight = function (light, w) {
-        var config;
-        var lightHelper;
+    }
+    loadLight(light, w) {
+        let config;
+        let lightHelper;
         switch (light.type) {
             case iv_3d_light_1.Iv3dLightType.point:
                 config = this.getPointLightCfg(light.lightProps);
@@ -791,9 +787,9 @@ var Iv3dObjectHandler = (function () {
         }
         this.setThreeLightProps(light, lightHelper);
         w.addLight(lightHelper);
-    };
-    Iv3dObjectHandler.prototype.genGeom = function (type, props, w) {
-        var geom;
+    }
+    genGeom(type, props, w) {
+        let geom;
         switch (type) {
             case iv_3d_object_1.Iv3dGeometryType.line:
                 geom = w.genLineGeom(this.getLineCfg(props));
@@ -835,17 +831,16 @@ var Iv3dObjectHandler = (function () {
         //    }
         //}
         return geom;
-    };
-    Iv3dObjectHandler.prototype.genMat = function (props, w, texture) {
-        var _this = this;
-        var typeProp = props.find(function (item) { return item.prop2 === 'type'; });
+    }
+    genMat(props, w, texture) {
+        let typeProp = props.find(item => item.prop2 === 'type');
         if (!typeProp) {
             typeProp = {
                 prop1: 'material', prop2: 'type', value: 'MeshBasicMaterial'
             };
         }
-        var type = typeProp.value;
-        var mat;
+        let type = typeProp.value;
+        let mat;
         switch (type) {
             case iv_3d_object_1.Iv3dMaterialType.lineBasic:
                 mat = w.genLineBasicMat();
@@ -870,9 +865,9 @@ var Iv3dObjectHandler = (function () {
                 mat = w.genMeshBasicMat();
                 break;
         }
-        var otherProps = props.filter(function (item) { return ['type', 'function'].indexOf(item.prop2) === -1; });
-        var hasTexture = false;
-        otherProps.forEach(function (otherProp) {
+        let otherProps = props.filter(item => ['type', 'function'].indexOf(item.prop2) === -1);
+        let hasTexture = false;
+        otherProps.forEach(otherProp => {
             try {
                 switch (otherProp.prop2) {
                     case 'texture':
@@ -892,7 +887,7 @@ var Iv3dObjectHandler = (function () {
                 }
             }
             catch (e) {
-                _this.errorSvc.log("Iv3dObjectHandler.genMat property set error: " + e);
+                this.errorSvc.log(`Iv3dObjectHandler.genMat property set error: ${e}`);
             }
         });
         if (hasTexture) {
@@ -905,9 +900,9 @@ var Iv3dObjectHandler = (function () {
             }
         }
         return mat;
-    };
-    Iv3dObjectHandler.prototype.genLight = function (type, props, w) {
-        var lightHelper;
+    }
+    genLight(type, props, w) {
+        let lightHelper;
         switch (type) {
             case iv_3d_light_1.Iv3dLightType.point:
                 lightHelper = w.genPointLight(this.getPointLightCfg(props));
@@ -934,84 +929,84 @@ var Iv3dObjectHandler = (function () {
         }
         */
         return lightHelper;
-    };
-    Iv3dObjectHandler.prototype.genGeomProps = function (geomType, cfg) {
-        var props = [];
+    }
+    genGeomProps(geomType, cfg) {
+        let props = [];
         switch (geomType) {
             case iv_3d_object_1.Iv3dGeometryType.line:
                 //props = JSON.parse(JSON.stringify(this.lineGeomProps));
-                props = this.lineGeomProps.map(function (item) { return Object.assign({}, item); });
+                props = this.lineGeomProps.map(item => Object.assign({}, item));
                 this.setLineCfgProps(cfg, props);
                 break;
             case iv_3d_object_1.Iv3dGeometryType.circle:
                 //props = this.circleGeomProps.slice();
                 //props = JSON.parse(JSON.stringify(this.circleGeomProps));
-                props = this.circleGeomProps.map(function (item) { return Object.assign({}, item); });
+                props = this.circleGeomProps.map(item => Object.assign({}, item));
                 this.setCircleCfgProps(cfg, props);
                 break;
             case iv_3d_object_1.Iv3dGeometryType.plane:
                 //props = this.planeGeomProps.slice();
                 //props = JSON.parse(JSON.stringify(this.planeGeomProps));
-                props = this.planeGeomProps.map(function (item) { return Object.assign({}, item); });
+                props = this.planeGeomProps.map(item => Object.assign({}, item));
                 this.setPlaneCfgProps(cfg, props);
                 break;
             case iv_3d_object_1.Iv3dGeometryType.box:
                 //props = this.cubeGeomProps.slice();
                 //props = JSON.parse(JSON.stringify(this.cubeGeomProps));
-                props = this.cubeGeomProps.map(function (item) { return Object.assign({}, item); });
+                props = this.cubeGeomProps.map(item => Object.assign({}, item));
                 this.setCubeCfgProps(cfg, props);
                 break;
             case iv_3d_object_1.Iv3dGeometryType.sphere:
                 //props = this.sphereGeomProps.slice();
                 //props = JSON.parse(JSON.stringify(this.sphereGeomProps));
-                props = this.sphereGeomProps.map(function (item) { return Object.assign({}, item); });
+                props = this.sphereGeomProps.map(item => Object.assign({}, item));
                 this.setSphereCfgProps(cfg, props);
                 break;
             case iv_3d_object_1.Iv3dGeometryType.cylinder:
                 //props = this.cylinderGeomProps.slice();
                 //props = JSON.parse(JSON.stringify(this.cylinderGeomProps));
-                props = this.cylinderGeomProps.map(function (item) { return Object.assign({}, item); });
+                props = this.cylinderGeomProps.map(item => Object.assign({}, item));
                 this.setCylinderCfgProps(cfg, props);
                 break;
             case iv_3d_object_1.Iv3dGeometryType.torus:
                 //props = this.torusGeomProps.slice();
                 //props = JSON.parse(JSON.stringify(this.torusGeomProps));
-                props = this.torusGeomProps.map(function (item) { return Object.assign({}, item); });
+                props = this.torusGeomProps.map(item => Object.assign({}, item));
                 this.setTorusCfgProps(cfg, props);
                 break;
             case iv_3d_object_1.Iv3dGeometryType.torusKnot:
                 //props = this.torusKnotGeomProps.slice();
                 //props = JSON.parse(JSON.stringify(this.torusKnotGeomProps));
-                props = this.torusKnotGeomProps.map(function (item) { return Object.assign({}, item); });
+                props = this.torusKnotGeomProps.map(item => Object.assign({}, item));
                 this.setTorusKnotCfgProps(cfg, props);
                 break;
             case iv_3d_object_1.Iv3dGeometryType.text:
                 //props = this.textGeomProps.slice();
                 //props = JSON.parse(JSON.stringify(this.textGeomProps));
-                props = this.textGeomProps.map(function (item) { return Object.assign({}, item); });
+                props = this.textGeomProps.map(item => Object.assign({}, item));
                 this.setTextCfgProps(cfg, props);
                 break;
             case iv_3d_object_1.Iv3dGeometryType.particles:
                 //props = this.particleGeomProps.slice();
                 //props = JSON.parse(JSON.stringify(this.particleGeomProps));
-                props = this.particleGeomProps.map(function (item) { return Object.assign({}, item); });
+                props = this.particleGeomProps.map(item => Object.assign({}, item));
                 this.setParticleCfgProps(cfg, props);
                 break;
             default:
                 break;
         }
         return props;
-    };
-    Iv3dObjectHandler.prototype.genMatProps = function (matType, mat, w) {
+    }
+    genMatProps(matType, mat, w) {
         //let props: Iv3dObjectProperty[] = this.materialProps.slice();
         //let props: Iv3dObjectProperty[] = JSON.parse(JSON.stringify(this.materialProps));
-        var props = this.materialProps.map(function (item) { return Object.assign({}, item); });
-        var _loop_1 = function(p) {
-            var prop = props.find(function (item) { return item.prop2 === p; });
+        let props = this.materialProps.map(item => Object.assign({}, item));
+        for (let p in mat) {
+            let prop = props.find(item => item.prop2 === p);
             if (prop) {
                 switch (prop.type) {
                     case 'color':
-                        var c = '#' + mat[p].getHex().toString(16);
+                        let c = '#' + mat[p].getHex().toString(16);
                         prop.value = c; // w.hexToRgb(c);
                         break;
                     default:
@@ -1019,61 +1014,56 @@ var Iv3dObjectHandler = (function () {
                         break;
                 }
             }
-        };
-        for (var p in mat) {
-            _loop_1(p);
         }
         return props;
-    };
-    Iv3dObjectHandler.prototype.genObjProps = function (threeObj) {
+    }
+    genObjProps(threeObj) {
         //let props: Iv3dObjectProperty[] = this.objectProps.slice();
         //let props: Iv3dObjectProperty[] = JSON.parse(JSON.stringify(this.objectProps));
-        var props = this.objectProps.map(function (item) { return Object.assign({}, item); });
-        for (var _i = 0, props_2 = props; _i < props_2.length; _i++) {
-            var prop = props_2[_i];
+        let props = this.objectProps.map(item => Object.assign({}, item));
+        for (let prop of props) {
             if (threeObj[prop.prop1] && threeObj[prop.prop1][prop.prop2]) {
                 prop.value = threeObj[prop.prop1][prop.prop2];
             }
         }
         return props;
-    };
-    Iv3dObjectHandler.prototype.genLightProps = function (lightType, cfg) {
-        var props = [];
+    }
+    genLightProps(lightType, cfg) {
+        let props = [];
         switch (lightType) {
             case iv_3d_light_1.Iv3dLightType.point:
                 //props = JSON.parse(JSON.stringify(this.pointLightProps));
-                props = this.pointLightProps.map(function (item) { return Object.assign({}, item); });
+                props = this.pointLightProps.map(item => Object.assign({}, item));
                 this.setPointLightCfgProps(cfg, props);
                 break;
             case iv_3d_light_1.Iv3dLightType.directional:
                 //props = JSON.parse(JSON.stringify(this.dirLightProps));
-                props = this.dirLightProps.map(function (item) { return Object.assign({}, item); });
+                props = this.dirLightProps.map(item => Object.assign({}, item));
                 this.setDirLightCfgProps(cfg, props);
                 break;
             case iv_3d_light_1.Iv3dLightType.hemisphere:
                 //props = JSON.parse(JSON.stringify(this.hemisphereLightProps));
-                props = this.hemisphereLightProps.map(function (item) { return Object.assign({}, item); });
+                props = this.hemisphereLightProps.map(item => Object.assign({}, item));
                 this.setHempisphereLightCfgProps(cfg, props);
                 break;
             case iv_3d_light_1.Iv3dLightType.spot:
                 //props = JSON.parse(JSON.stringify(this.spotLightProps));
-                props = this.spotLightProps.map(function (item) { return Object.assign({}, item); });
+                props = this.spotLightProps.map(item => Object.assign({}, item));
                 this.setSpotLightCfgProps(cfg, props);
                 break;
             default:
                 break;
         }
         return props;
-    };
-    Iv3dObjectHandler.prototype.setIv3dObjectProps = function (obj, threeObj) {
+    }
+    setIv3dObjectProps(obj, threeObj) {
         obj.uuid = threeObj.uuid;
         obj.name = threeObj.name;
         obj.objectProps = this.genObjProps(threeObj);
         threeObj.userData = obj;
-    };
-    Iv3dObjectHandler.prototype.setThreeObjProps = function (obj, threeObj) {
-        for (var _i = 0, _a = obj.objectProps; _i < _a.length; _i++) {
-            var prop = _a[_i];
+    }
+    setThreeObjProps(obj, threeObj) {
+        for (let prop of obj.objectProps) {
             if (threeObj[prop.prop1] && !cfg.U.isEmpty(prop.value)) {
                 threeObj[prop.prop1][prop.prop2] = prop.value;
             }
@@ -1083,19 +1073,19 @@ var Iv3dObjectHandler = (function () {
         threeObj.name = obj.name;
         threeObj.url = obj.url;
         threeObj.panels = obj.contentPanels;
-    };
-    Iv3dObjectHandler.prototype.setIv3dLightProps = function (obj, threeLightHelper) {
+    }
+    setIv3dLightProps(obj, threeLightHelper) {
         obj.uuid = threeLightHelper.uuid;
         obj.name = threeLightHelper.name;
         // obj.lightProps = this.genLightProps(obj.type, threeLightObj);
         threeLightHelper.userData = obj;
-    };
-    Iv3dObjectHandler.prototype.setThreeLightProps = function (light, threeObj) {
+    }
+    setThreeLightProps(light, threeObj) {
         threeObj.userData = light;
         threeObj.uuid = light.uuid;
         threeObj.name = light.name;
-    };
-    Iv3dObjectHandler.prototype.loadObjectLoaderData = function (data, w, mainGroup) {
+    }
+    loadObjectLoaderData(data, w, mainGroup) {
         if (mainGroup) {
             w.clear(mainGroup);
         }
@@ -1104,17 +1094,16 @@ var Iv3dObjectHandler = (function () {
         // this.timelines = data.timelines;
         w.add(mainGroup);
         w.objects = w.objects.concat(mainGroup.object.children);
-    };
-    Iv3dObjectHandler.prototype.loadData = function (data, w, mainGroup, demo, isPublic, key) {
-        var _this = this;
+    }
+    loadData(data, w, mainGroup, demo, isPublic, key) {
         if (data) {
             this.fixData(data);
-            var cameraCfg = Object.assign({}, this.cameraCfg);
+            let cameraCfg = Object.assign({}, this.cameraCfg);
             if (data.cameraProps && data.cameraProps.length > 0) {
                 cameraCfg = this.getCameraCfg(data.cameraProps);
             }
             w.setCamera(cameraCfg);
-            var sceneCfg = Object.assign({}, this.sceneCfg);
+            let sceneCfg = Object.assign({}, this.sceneCfg);
             if (data.sceneProps && data.sceneProps.length > 0) {
                 sceneCfg = this.getSceneCfg(data.sceneProps);
             }
@@ -1132,24 +1121,18 @@ var Iv3dObjectHandler = (function () {
             }
             w.setScene(sceneCfg);
             if (data.container && data.container.children) {
-                var _loop_2 = function(obj) {
-                    this_1.loadObject(obj, w, mainGroup, demo, isPublic, key, function (threeObj) {
-                        var shaderIdProp = _this.getProp('shaderId', obj.materialProps);
+                for (let obj of data.container.children) {
+                    this.loadObject(obj, w, mainGroup, demo, isPublic, key, (threeObj) => {
+                        let shaderIdProp = this.getProp('shaderId', obj.materialProps);
                         if (shaderIdProp && !cfg.U.isEmptyString(shaderIdProp.value) && data.shaders) {
-                            var shader = data.shaders.find(function (item) { return item.id === shaderIdProp.value; });
-                            _this.attachShader(shader, obj, threeObj, w, demo, isPublic, key);
+                            let shader = data.shaders.find(item => item.id === shaderIdProp.value);
+                            this.attachShader(shader, obj, threeObj, w, demo, isPublic, key);
                         }
                     });
-                };
-                var this_1 = this;
-                for (var _i = 0, _a = data.container.children; _i < _a.length; _i++) {
-                    var obj = _a[_i];
-                    _loop_2(obj);
                 }
             }
             if (data.lights) {
-                for (var _b = 0, _c = data.lights; _b < _c.length; _b++) {
-                    var light = _c[_b];
+                for (let light of data.lights) {
                     this.loadLight(light, w);
                 }
             }
@@ -1157,15 +1140,15 @@ var Iv3dObjectHandler = (function () {
         // this.timelines = data.timelines;
         w.add(mainGroup);
         w.objects = w.objects.concat(mainGroup.children);
-    };
-    Iv3dObjectHandler.prototype.loadNewData = function (data, w) {
+    }
+    loadNewData(data, w) {
         this.createContainer(data);
         //data.cameraProps = JSON.parse(JSON.stringify(this.cameraProps));
-        data.cameraProps = this.cameraProps.map(function (item) { return Object.assign({}, item); });
+        data.cameraProps = this.cameraProps.map(item => Object.assign({}, item));
         //data.sceneProps = JSON.parse(JSON.stringify(this.sceneProps));
-        data.sceneProps = this.sceneProps.map(function (item) { return Object.assign({}, item); });
-    };
-    Iv3dObjectHandler.prototype.createContainer = function (data) {
+        data.sceneProps = this.sceneProps.map(item => Object.assign({}, item));
+    }
+    createContainer(data) {
         if (data) {
             data.container = new iv_3d_object_1.Iv3dObject();
             data.container.meshType = iv_3d_object_1.Iv3dObjectType.group;
@@ -1174,71 +1157,69 @@ var Iv3dObjectHandler = (function () {
             return data.container;
         }
         return null;
-    };
-    Iv3dObjectHandler.prototype.createMainGroup = function (data, w) {
-        var mainGroup = null;
+    }
+    createMainGroup(data, w) {
+        let mainGroup = null;
         if (data && data.container) {
             mainGroup = w.addGroup();
             mainGroup.uuid = data.container.uuid;
             mainGroup.name = data.container.name;
         }
         return mainGroup;
-    };
-    Iv3dObjectHandler.prototype.getFullFileName = function (fileName, demo, isPublic, key) {
-        var userName = demo || isPublic ? user_service_1.PUBLIC_USER : this.userSvc.userName;
-        var userKey = '';
+    }
+    getFullFileName(fileName, demo, isPublic, key) {
+        let userName = demo || isPublic ? user_service_1.PUBLIC_USER : this.userSvc.userName;
+        let userKey = '';
         if (!demo)
-            userKey = "/" + this.userSvc.userKey;
+            userKey = `/${this.userSvc.userKey}`;
         if (isPublic)
-            userKey = "/" + user_service_1.PUBLIC_DIR + "/" + key;
-        var fullFileName = "" + this.environment.usersDataUrl + userName + userKey + "/" + fileName;
+            userKey = `/${user_service_1.PUBLIC_DIR}/${key}`;
+        let fullFileName = `${this.environment.usersDataUrl}${userName}${userKey}/${fileName}`;
         return fullFileName;
-    };
-    Iv3dObjectHandler.prototype.loadTextureMat = function (imgFile, obj, w, demo, isPublic, key, handler) {
-        var _this = this;
-        var loader = new THREE.TextureLoader();
+    }
+    loadTextureMat(imgFile, obj, w, demo, isPublic, key, handler) {
+        let loader = new THREE.TextureLoader();
         loader.crossOrigin = 'use-credentials';
-        var fullImgFile = this.getFullFileName(imgFile, demo, isPublic, key);
-        loader.load(fullImgFile, function (texture) {
+        let fullImgFile = this.getFullFileName(imgFile, demo, isPublic, key);
+        loader.load(fullImgFile, (texture) => {
             // texture.minFilter = THREE.LinearFilter;
-            var mat = _this.genMat(obj.materialProps, w, texture);
+            let mat = this.genMat(obj.materialProps, w, texture);
             if (handler) {
                 handler(mat);
             }
         });
-    };
-    Iv3dObjectHandler.prototype.loadTexture = function (imgFile, w, demo, isPublic, key, handler) {
-        var loader = new THREE.TextureLoader();
+    }
+    loadTexture(imgFile, w, demo, isPublic, key, handler) {
+        let loader = new THREE.TextureLoader();
         loader.crossOrigin = 'use-credentials';
-        var fullImgFile = this.getFullFileName(imgFile, demo, isPublic, key);
-        return loader.load(fullImgFile, function (texture) {
+        let fullImgFile = this.getFullFileName(imgFile, demo, isPublic, key);
+        return loader.load(fullImgFile, (texture) => {
             if (handler) {
                 handler(texture);
             }
         });
-    };
-    Iv3dObjectHandler.prototype.createCanvasTexture = function (obj, geom, w, imgFile, demo, isPublic, key) {
+    }
+    createCanvasTexture(obj, geom, w, imgFile, demo, isPublic, key) {
         if (!obj || !geom)
             return;
-        var textureCfg = this.getTextureCfg(obj.materialProps);
+        let textureCfg = this.getTextureCfg(obj.materialProps);
         geom.computeBoundingBox();
-        var size = geom.boundingBox.getSize();
+        let size = geom.boundingBox.getSize();
         textureCfg.canvas.width = size.x;
         textureCfg.canvas.height = size.y;
-        var fullImgFile = this.getFullFileName(imgFile, demo, isPublic, key);
-        var texture = w.createCanvasTexture(fullImgFile, textureCfg);
+        let fullImgFile = this.getFullFileName(imgFile, demo, isPublic, key);
+        let texture = w.createCanvasTexture(fullImgFile, textureCfg);
         return texture;
-    };
-    Iv3dObjectHandler.prototype.genObjectWithMat = function (obj, geom, mainGroup, w, demo, isPublic, key, threeObjCallback) {
-        var _this = this;
-        var threeObj;
-        var useCanvasProp = this.getProp('useCanvas', obj.materialProps);
-        var textureProp = this.getProp('texture', obj.materialProps);
+    }
+    genObjectWithMat(obj, geom, mainGroup, w, demo, isPublic, key, threeObjCallback) {
+        let threeObj;
+        let useCanvasProp = this.getProp('useCanvas', obj.materialProps);
+        let textureProp = this.getProp('texture', obj.materialProps);
         if (useCanvasProp && useCanvasProp.value) {
-            var textureCfg = this.getTextureCfg(obj.materialProps);
-            var imgFile = textureProp && textureProp.value ? textureProp.value : '';
-            var texture = this.createCanvasTexture(obj, geom, w, imgFile, demo, isPublic, key);
-            var mat = void 0;
+            let textureCfg = this.getTextureCfg(obj.materialProps);
+            let imgFile = textureProp && textureProp.value ? textureProp.value : '';
+            let texture = this.createCanvasTexture(obj, geom, w, imgFile, demo, isPublic, key);
+            let mat;
             mat = this.genMat(obj.materialProps, w, texture);
             threeObj = w.addMesh(geom, mat, mainGroup);
             this.setThreeObjProps(obj, threeObj);
@@ -1248,16 +1229,16 @@ var Iv3dObjectHandler = (function () {
         }
         else {
             if (textureProp && !cfg.U.isEmptyString(textureProp.value)) {
-                this.loadTextureMat(textureProp.value, obj, w, demo, isPublic, key, function (mat) {
+                this.loadTextureMat(textureProp.value, obj, w, demo, isPublic, key, (mat) => {
                     threeObj = w.addMesh(geom, mat, mainGroup);
-                    _this.setThreeObjProps(obj, threeObj);
+                    this.setThreeObjProps(obj, threeObj);
                     if (threeObjCallback) {
                         threeObjCallback(threeObj);
                     }
                 });
             }
             else {
-                var mat = void 0;
+                let mat;
                 mat = this.genMat(obj.materialProps, w);
                 threeObj = w.addMesh(geom, mat, mainGroup);
                 this.setThreeObjProps(obj, threeObj);
@@ -1266,22 +1247,21 @@ var Iv3dObjectHandler = (function () {
                 }
             }
         }
-    };
-    Iv3dObjectHandler.prototype.genParticlesWithMat = function (obj, geom, mainGroup, w, demo, isPublic, key, threeObjCallback) {
-        var _this = this;
-        var threeObj;
-        var textureProp = this.getProp('texture', obj.materialProps);
+    }
+    genParticlesWithMat(obj, geom, mainGroup, w, demo, isPublic, key, threeObjCallback) {
+        let threeObj;
+        let textureProp = this.getProp('texture', obj.materialProps);
         if (textureProp && !cfg.U.isEmptyString(textureProp.value)) {
-            this.loadTextureMat(textureProp.value, obj, w, demo, isPublic, key, function (mat) {
+            this.loadTextureMat(textureProp.value, obj, w, demo, isPublic, key, (mat) => {
                 threeObj = w.addParticleMesh(geom, mat, mainGroup);
-                _this.setThreeObjProps(obj, threeObj);
+                this.setThreeObjProps(obj, threeObj);
                 if (threeObjCallback) {
                     threeObjCallback(threeObj);
                 }
             });
         }
         else {
-            var mat = void 0;
+            let mat;
             mat = this.genMat(obj.materialProps, w);
             threeObj = w.addParticleMesh(geom, mat, mainGroup);
             this.setThreeObjProps(obj, threeObj);
@@ -1289,14 +1269,13 @@ var Iv3dObjectHandler = (function () {
                 threeObjCallback(threeObj);
             }
         }
-    };
-    Iv3dObjectHandler.prototype.fixData = function (data) {
-        var _this = this;
+    }
+    fixData(data) {
         if (!data)
             return;
         //if (!data.cameraProps || data.cameraProps.length === 0) data.cameraProps = JSON.parse(JSON.stringify(this.cameraProps));
         if (!data.cameraProps || data.cameraProps.length === 0)
-            data.cameraProps = this.cameraProps.map(function (item) { return Object.assign({}, item); });
+            data.cameraProps = this.cameraProps.map(item => Object.assign({}, item));
         //if (!data.sceneProps || data.sceneProps.length === 0) data.sceneProps = JSON.parse(JSON.stringify(this.sceneProps));
         // if (!data.sceneProps || data.sceneProps.length === 0) data.sceneProps = this.sceneProps.map(item => Object.assign({}, item));
         this.fixMissingProps(data.sceneProps, this.sceneProps);
@@ -1313,63 +1292,63 @@ var Iv3dObjectHandler = (function () {
         if (!data.container) {
             this.createContainer(data);
         }
-        data.container.children.forEach(function (o) {
-            _this.fixMissingProps(o.materialProps, _this.materialProps);
-            _this.fixMissingProps(o.objectProps, _this.objectProps);
-            _this.fixObjMissingProperty(o, 'url', true);
-            _this.fixObjMissingProperty(o, 'contentPanels', true);
-            _this.fixObjMissingProperty(o, 'visible', true);
-            _this.fixObjMissingProperty(o, 'visibleRuntime', true);
-            _this.fixObjMissingProperty(o, 'sVisibleRuntime', true);
-            _this.fixObjMissingProperty(o, 'script', true);
+        data.container.children.forEach((o) => {
+            this.fixMissingProps(o.materialProps, this.materialProps);
+            this.fixMissingProps(o.objectProps, this.objectProps);
+            this.fixObjMissingProperty(o, 'url', true);
+            this.fixObjMissingProperty(o, 'contentPanels', true);
+            this.fixObjMissingProperty(o, 'visible', true);
+            this.fixObjMissingProperty(o, 'visibleRuntime', true);
+            this.fixObjMissingProperty(o, 'sVisibleRuntime', true);
+            this.fixObjMissingProperty(o, 'script', true);
         });
         //if (!data.audioProps || data.audioProps.length === 0) data.audioProps = JSON.parse(JSON.stringify(this.audioProps));
         if (!data.audioProps || data.audioProps.length === 0)
-            data.audioProps = this.audioProps.map(function (item) { return Object.assign({}, item); });
-        data.timelines.forEach(function (timeline) {
-            timeline.meshes.forEach(function (tmesh) {
-                _this.fixTimelineMeshProperty(tmesh, 'visible', true);
-                _this.fixTimelineMeshProperty(tmesh, 'runtimeTweenReverseMouseUp', false);
-                _this.fixTimelineMeshProperty(tmesh, 'runtimeTweenReverseMouseDown', false);
+            data.audioProps = this.audioProps.map(item => Object.assign({}, item));
+        data.timelines.forEach((timeline) => {
+            timeline.meshes.forEach((tmesh) => {
+                this.fixTimelineMeshProperty(tmesh, 'visible', true);
+                this.fixTimelineMeshProperty(tmesh, 'runtimeTweenReverseMouseUp', false);
+                this.fixTimelineMeshProperty(tmesh, 'runtimeTweenReverseMouseDown', false);
             });
         });
         // if (!data.dataSourceProps || data.dataSourceProps.length === 0) data.dataSourceProps = this.dataSourceProps.map(item => Object.assign({}, item));
         this.fixMissingProps(data.dataSourceProps, this.dataSourceProps);
-    };
-    Iv3dObjectHandler.prototype.getAudio = function (data, demo, isPublic, key) {
+    }
+    getAudio(data, demo, isPublic, key) {
         if (!data)
             return null;
         if (!data.audioProps || data.audioProps.length === 0)
             this.fixData(data);
-        var audioFileProp = data.audioProps.find(function (item) { return item.prop2 === 'fileName'; });
+        let audioFileProp = data.audioProps.find(item => item.prop2 === 'fileName');
         if (!audioFileProp || !audioFileProp.value)
             return null;
-        var userName = demo ? user_service_1.PUBLIC_USER : this.userSvc.userName;
-        var userKey = '';
+        let userName = demo ? user_service_1.PUBLIC_USER : this.userSvc.userName;
+        let userKey = '';
         if (!demo)
-            userKey = "/" + this.userSvc.userKey;
+            userKey = `/${this.userSvc.userKey}`;
         if (isPublic)
-            userKey = "/" + user_service_1.PUBLIC_DIR + "/" + key;
-        var fullFileName = "" + this.environment.usersDataUrl + userName + userKey + "/" + audioFileProp.value;
-        var audio = this.getAudioCfg(data.audioProps);
+            userKey = `/${user_service_1.PUBLIC_DIR}/${key}`;
+        let fullFileName = `${this.environment.usersDataUrl}${userName}${userKey}/${audioFileProp.value}`;
+        let audio = this.getAudioCfg(data.audioProps);
         audio.fullFileName = fullFileName;
         return audio;
-    };
-    Iv3dObjectHandler.prototype.getDataCss = function (data) {
+    }
+    getDataCss(data) {
         if (!data)
             return null;
         if (!data.sceneProps || data.sceneProps.length === 0)
             this.fixData(data);
-        var backgroundColorProp = data.sceneProps.find(function (item) { return item.prop2 === 'backgroundColor'; });
+        let backgroundColorProp = data.sceneProps.find(item => item.prop2 === 'backgroundColor');
         if (!backgroundColorProp || !backgroundColorProp.value)
             return null;
-        var backgroundColor = backgroundColorProp.value;
+        let backgroundColor = backgroundColorProp.value;
         return this.getCss(backgroundColor);
-    };
-    Iv3dObjectHandler.prototype.getCss = function (backgroundColor) {
-        var dataCss = new cfg.CssCfg();
+    }
+    getCss(backgroundColor) {
+        let dataCss = new cfg.CssCfg();
         if (backgroundColor) {
-            var color = void 0;
+            let color;
             if (backgroundColor.r || backgroundColor.g || backgroundColor.b)
                 color = '#' + wgl_util_1.WglUtil.rgbToHex(backgroundColor.r, backgroundColor.g, backgroundColor.b);
             else
@@ -1377,11 +1356,11 @@ var Iv3dObjectHandler = (function () {
             dataCss = { 'background-color': color };
         }
         return dataCss;
-    };
-    Iv3dObjectHandler.prototype.fixObjMissingProperty = function (o, propName, setObjectProp) {
-        var prop = o.objectProps.find(function (p) { return p.prop2 === propName; });
+    }
+    fixObjMissingProperty(o, propName, setObjectProp) {
+        let prop = o.objectProps.find((p) => p.prop2 === propName);
         if (!prop) {
-            var metaProp = this.objectProps.find(function (p) { return p.prop2 === propName; });
+            let metaProp = this.objectProps.find((p) => p.prop2 === propName);
             if (metaProp) {
                 prop = Object.assign({}, metaProp);
                 o.objectProps.push(prop);
@@ -1390,31 +1369,27 @@ var Iv3dObjectHandler = (function () {
                 }
             }
         }
-    };
-    Iv3dObjectHandler.prototype.fixMissingProps = function (props, standardProps) {
+    }
+    fixMissingProps(props, standardProps) {
         if (!props && !standardProps)
             props = [];
         if (!standardProps)
             return props;
         if (!props || props.length === 0)
-            props = standardProps.map(function (item) { return Object.assign({}, item); });
-        var _loop_3 = function(standardProp) {
-            var prop = props.find(function (item) { return item.prop2 === standardProp.prop2; });
+            props = standardProps.map(item => Object.assign({}, item));
+        for (let standardProp of standardProps) {
+            let prop = props.find(item => item.prop2 === standardProp.prop2);
             if (!prop) {
                 props.push(Object.assign({}, standardProp));
             }
-        };
-        for (var _i = 0, standardProps_1 = standardProps; _i < standardProps_1.length; _i++) {
-            var standardProp = standardProps_1[_i];
-            _loop_3(standardProp);
         }
-    };
-    Iv3dObjectHandler.prototype.fixTimelineMeshProperty = function (tmesh, propName, defaultValue) {
-        var prop = tmesh[propName];
+    }
+    fixTimelineMeshProperty(tmesh, propName, defaultValue) {
+        let prop = tmesh[propName];
         tmesh[propName] = defaultValue;
-    };
-    Iv3dObjectHandler.prototype.createDefaultObject = function (meshType, geomType) {
-        var obj = new iv_3d_object_1.Iv3dObject();
+    }
+    createDefaultObject(meshType, geomType) {
+        let obj = new iv_3d_object_1.Iv3dObject();
         obj.cfgProps = [];
         obj.children = [];
         obj.contentPanels = null;
@@ -1429,40 +1404,40 @@ var Iv3dObjectHandler = (function () {
         obj.uuid = k_gen_1.KGen.uuid();
         obj.visibleRuntime = true;
         return obj;
-    };
-    Iv3dObjectHandler.TweenEasings = {
-        'Linear.None': TWEEN.Easing.Linear.None,
-        'Quadratic.In': TWEEN.Easing.Quadratic.In,
-        'Quadratic.Out': TWEEN.Easing.Quadratic.Out,
-        'Quadratic.InOut': TWEEN.Easing.Quadratic.InOut,
-        'Cubic.In': TWEEN.Easing.Cubic.In,
-        'Cubic.Out': TWEEN.Easing.Cubic.Out,
-        'Cubic.InOut': TWEEN.Easing.Cubic.InOut,
-        'Quartic.In': TWEEN.Easing.Quartic.In,
-        'Quartic.Out': TWEEN.Easing.Quartic.Out,
-        'Quartic.InOut': TWEEN.Easing.Quartic.InOut,
-        'Quintic.In': TWEEN.Easing.Quintic.In,
-        'Quintic.Out': TWEEN.Easing.Quintic.Out,
-        'Quintic.InOut': TWEEN.Easing.Quintic.InOut,
-        'Sinusoidal.In': TWEEN.Easing.Sinusoidal.In,
-        'Sinusoidal.Out': TWEEN.Easing.Sinusoidal.Out,
-        'Sinusoidal.InOut': TWEEN.Easing.Sinusoidal.InOut,
-        'Exponential.In': TWEEN.Easing.Exponential.In,
-        'Exponential.Out': TWEEN.Easing.Exponential.Out,
-        'Exponential.InOut': TWEEN.Easing.Exponential.InOut,
-        'Circular.In': TWEEN.Easing.Circular.In,
-        'Circular.Out': TWEEN.Easing.Circular.Out,
-        'Circular.InOut': TWEEN.Easing.Circular.InOut,
-        'Elastic.In': TWEEN.Easing.Elastic.In,
-        'Elastic.Out': TWEEN.Easing.Elastic.Out,
-        'Elastic.InOut': TWEEN.Easing.Elastic.InOut,
-        'Back.In': TWEEN.Easing.Back.In,
-        'Back.Out': TWEEN.Easing.Back.Out,
-        'Back.InOut': TWEEN.Easing.Back.InOut,
-        'Bounce.In': TWEEN.Easing.Bounce.In,
-        'Bounce.Out': TWEEN.Easing.Bounce.Out,
-        'Bounce.InOut': TWEEN.Easing.Bounce.InOut
-    };
-    return Iv3dObjectHandler;
-}());
+    }
+}
+Iv3dObjectHandler.TweenEasings = {
+    'Linear.None': TWEEN.Easing.Linear.None,
+    'Quadratic.In': TWEEN.Easing.Quadratic.In,
+    'Quadratic.Out': TWEEN.Easing.Quadratic.Out,
+    'Quadratic.InOut': TWEEN.Easing.Quadratic.InOut,
+    'Cubic.In': TWEEN.Easing.Cubic.In,
+    'Cubic.Out': TWEEN.Easing.Cubic.Out,
+    'Cubic.InOut': TWEEN.Easing.Cubic.InOut,
+    'Quartic.In': TWEEN.Easing.Quartic.In,
+    'Quartic.Out': TWEEN.Easing.Quartic.Out,
+    'Quartic.InOut': TWEEN.Easing.Quartic.InOut,
+    'Quintic.In': TWEEN.Easing.Quintic.In,
+    'Quintic.Out': TWEEN.Easing.Quintic.Out,
+    'Quintic.InOut': TWEEN.Easing.Quintic.InOut,
+    'Sinusoidal.In': TWEEN.Easing.Sinusoidal.In,
+    'Sinusoidal.Out': TWEEN.Easing.Sinusoidal.Out,
+    'Sinusoidal.InOut': TWEEN.Easing.Sinusoidal.InOut,
+    'Exponential.In': TWEEN.Easing.Exponential.In,
+    'Exponential.Out': TWEEN.Easing.Exponential.Out,
+    'Exponential.InOut': TWEEN.Easing.Exponential.InOut,
+    'Circular.In': TWEEN.Easing.Circular.In,
+    'Circular.Out': TWEEN.Easing.Circular.Out,
+    'Circular.InOut': TWEEN.Easing.Circular.InOut,
+    'Elastic.In': TWEEN.Easing.Elastic.In,
+    'Elastic.Out': TWEEN.Easing.Elastic.Out,
+    'Elastic.InOut': TWEEN.Easing.Elastic.InOut,
+    'Back.In': TWEEN.Easing.Back.In,
+    'Back.Out': TWEEN.Easing.Back.Out,
+    'Back.InOut': TWEEN.Easing.Back.InOut,
+    'Bounce.In': TWEEN.Easing.Bounce.In,
+    'Bounce.Out': TWEEN.Easing.Bounce.Out,
+    'Bounce.InOut': TWEEN.Easing.Bounce.InOut
+};
 exports.Iv3dObjectHandler = Iv3dObjectHandler;
+//# sourceMappingURL=iv-3d-object-handler.js.map

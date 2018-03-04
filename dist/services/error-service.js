@@ -1,48 +1,32 @@
 "use strict";
-var ErrorService = (function () {
-    function ErrorService() {
+class ErrorService {
+    constructor() {
         this.useAlertForErrors = false;
     }
-    ErrorService.prototype.log = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i - 0] = arguments[_i];
-        }
+    log(...args) {
         if (!console || !console.log)
             return;
         console.log(args);
         this.display(args);
-    };
-    ErrorService.prototype.info = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i - 0] = arguments[_i];
-        }
+    }
+    info(...args) {
         if (!console || !console.info)
             return;
         console.info(args);
         this.display(args);
-    };
-    ErrorService.prototype.error = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i - 0] = arguments[_i];
-        }
+    }
+    error(...args) {
         if (!console || !console.error)
             return;
         console.error(args);
         this.display(args);
-    };
-    ErrorService.prototype.display = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i - 0] = arguments[_i];
-        }
+    }
+    display(...args) {
         if (this.useAlertForErrors) {
-            var s = JSON.stringify(args);
+            let s = JSON.stringify(args);
             alert(s);
         }
-    };
-    return ErrorService;
-}());
+    }
+}
 exports.ErrorService = ErrorService;
+//# sourceMappingURL=error-service.js.map

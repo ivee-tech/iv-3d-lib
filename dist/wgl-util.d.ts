@@ -81,11 +81,11 @@ export declare class WglUtil {
     private dndOffset;
     private dndIntersection;
     copyCfg(srcCfg: any, destCfg: any): void;
-    Android: () => any;
-    BlackBerry: () => any;
-    iOS: () => any;
-    Opera: () => any;
-    Windows: () => any;
+    Android: () => RegExpMatchArray;
+    BlackBerry: () => RegExpMatchArray;
+    iOS: () => RegExpMatchArray;
+    Opera: () => RegExpMatchArray;
+    Windows: () => RegExpMatchArray;
     isMobile(): any;
     static detectWebGL(): boolean;
     setOptions(cfg: any): void;
@@ -239,8 +239,9 @@ export declare class WglUtil {
     genMirrorCubeMat(cfg: any): any;
     addMirrorCube(cfg: any): any;
     updateMirrorCube(): void;
-    createCssObject(w: number, h: number, position: THREE.Vector3, rotation: THREE.Vector3, url: string): any;
+    createCssObject(w: number, h: number, position: THREE.Vector3, rotation: THREE.Vector3, url: string, id?: string): any;
     createCss3DPagePlane(w: any, h: any, position: any, rotation: any): any;
-    create3dPage(w: any, h: any, position: any, rotation: any, url: any, group?: any): void;
+    create3dPage(w: any, h: any, position: any, rotation: any, url: any, id?: string, group?: any): void;
+    refresh3dPage(id: string, url?: string): void;
     setCssRenderer(): void;
 }

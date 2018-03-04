@@ -1,20 +1,18 @@
 "use strict";
-var SkyBoxPlugin = (function () {
-    function SkyBoxPlugin() {
+class SkyBoxPlugin {
+    init() {
     }
-    SkyBoxPlugin.prototype.init = function () {
-    };
-    SkyBoxPlugin.prototype.load = function () {
+    load() {
         this.addSkyBox();
-    };
-    SkyBoxPlugin.prototype.update = function (time) {
-    };
-    SkyBoxPlugin.prototype.addSkyBox = function () {
-        var cfg = {
+    }
+    update(time) {
+    }
+    addSkyBox() {
+        let cfg = {
             srcFile: this.config['srcFile'], size: this.config['size']
         };
         this.w.addSkyBoxFromFile(cfg, this.mainGroup);
-    };
-    return SkyBoxPlugin;
-}());
+    }
+}
 exports.SkyBoxPlugin = SkyBoxPlugin;
+//# sourceMappingURL=skybox-plugin.js.map

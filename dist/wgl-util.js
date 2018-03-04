@@ -1,20 +1,20 @@
 "use strict";
-var THREE = require('three');
-var dat = require('dat-gui');
-var stats_1 = require('./stats');
-var cfg = require('./wgl-util-cfgs');
-var bird_1 = require('./bird');
-var boid_1 = require('./boid');
-var OrbitControls = require('three-orbitcontrols');
-var TrackballControls = require('three-trackballcontrols');
-var leapControls = require('threeleapcontrols');
-var StereoEffect = require('three-stereoeffect');
-var AnaglyphEffect = require('three-anaglypheffect');
-var AsciiEffect = require('three-asciieffect');
-var css3d = require('three-css3drenderer');
-var wgl_util_content_changed_args_1 = require('./wgl-util-content-changed-args');
-var WglUtil = (function () {
-    function WglUtil() {
+const THREE = require('three');
+const dat = require('dat-gui');
+const stats_1 = require('./stats');
+const cfg = require('./wgl-util-cfgs');
+const bird_1 = require('./bird');
+const boid_1 = require('./boid');
+const OrbitControls = require('three-orbitcontrols');
+const TrackballControls = require('three-trackballcontrols');
+const leapControls = require('threeleapcontrols');
+const StereoEffect = require('three-stereoeffect');
+const AnaglyphEffect = require('three-anaglypheffect');
+const AsciiEffect = require('three-asciieffect');
+const css3d = require('three-css3drenderer');
+const wgl_util_content_changed_args_1 = require('./wgl-util-content-changed-args');
+class WglUtil {
+    constructor() {
         this.leapObjectsControls = [];
         this.objects = [];
         this.parent = null;
@@ -152,19 +152,19 @@ var WglUtil = (function () {
         this.dndPlane = new THREE.Plane();
         this.dndOffset = new THREE.Vector3();
         this.dndIntersection = new THREE.Vector3();
-        this.Android = function () {
+        this.Android = () => {
             return navigator.userAgent.match(/Android/i);
         };
-        this.BlackBerry = function () {
+        this.BlackBerry = () => {
             return navigator.userAgent.match(/BlackBerry/i);
         };
-        this.iOS = function () {
+        this.iOS = () => {
             return navigator.userAgent.match(/iPhone|iPad|iPod/i);
         };
-        this.Opera = function () {
+        this.Opera = () => {
             return navigator.userAgent.match(/Opera Mini/i);
         };
-        this.Windows = function () {
+        this.Windows = () => {
             return navigator.userAgent.match(/IEMobile/i);
         };
         this.cfg = {
@@ -194,60 +194,59 @@ var WglUtil = (function () {
         this.dndIntersectedObject = null;
         this.dndSelectedObjectBoxHelper = null;
     }
-    WglUtil.prototype.copyCfg = function (srcCfg, destCfg) {
-        for (var p in srcCfg) {
+    copyCfg(srcCfg, destCfg) {
+        for (let p in srcCfg) {
             if (destCfg.hasOwnProperty(p)) {
                 destCfg[p] = srcCfg[p];
             }
         }
-    };
-    WglUtil.prototype.isMobile = function () {
-        var _this = this;
+    }
+    isMobile() {
         return {
             Android: this.Android(),
             Blackberry: this.BlackBerry(),
             iOS: this.iOS(),
             Opera: this.Opera(),
             Windows: this.Windows(),
-            any: function () {
-                return (_this.Android() || _this.BlackBerry() || _this.iOS() || _this.Opera() || _this.Windows());
+            any: () => {
+                return (this.Android() || this.BlackBerry() || this.iOS() || this.Opera() || this.Windows());
             }
         };
-    };
-    WglUtil.detectWebGL = function () {
+    }
+    static detectWebGL() {
         try {
-            var canvas = document.createElement('canvas');
+            let canvas = document.createElement('canvas');
             return !!(window['WebGLRenderingContext'] && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
         }
         catch (e) {
             console.log('WglUtil.detectWebGL: ', e);
             return false;
         }
-    };
-    WglUtil.prototype.setOptions = function (cfg) {
+    }
+    setOptions(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.cfg);
         }
-    };
-    WglUtil.prototype.setOption = function (name, value) {
+    }
+    setOption(name, value) {
         if (this.cfg.hasOwnProperty(name)) {
             this.cfg[name] = value;
         }
-    };
-    WglUtil.prototype.getUrl = function (url, onSuccess, onError) {
+    }
+    getUrl(url, onSuccess, onError) {
         var request = new XMLHttpRequest();
         request.open('GET', url, true);
         request.onload = function () {
             if (request.status >= 200 && request.status < 400) {
                 // Success!
                 // var data = JSON.parse(request.responseText);
-                var data = request.responseText;
+                let data = request.responseText;
                 if (onSuccess) {
                     onSuccess(data);
                 }
             }
             else {
-                var errMsg = 'Error returned from server';
+                let errMsg = 'Error returned from server';
                 console.error(errMsg, request);
                 if (onError) {
                     onError(new Error(errMsg));
@@ -261,8 +260,8 @@ var WglUtil = (function () {
             }
         };
         request.send();
-    };
-    WglUtil.prototype.init = function (sceneConfig, cameraConfig, rendererConfig, orbitCfg, trackballCfg) {
+    }
+    init(sceneConfig, cameraConfig, rendererConfig, orbitCfg, trackballCfg) {
         if (sceneConfig) {
             this.copyCfg(sceneConfig, this.sceneCfg);
         }
@@ -299,7 +298,10 @@ var WglUtil = (function () {
         if (this.cfg.useCssRender) {
             this.setCssRenderer();
         }
-        var canvas = document.getElementById(this.cfg.canvasId);
+        let canvas = document.getElementById(this.cfg.canvasId);
+        while (canvas.firstChild) {
+            canvas.removeChild(canvas.firstChild);
+        }
         if (this.cfg.useAsciiEffect) {
             this.setAsciiEffect();
         }
@@ -324,8 +326,8 @@ var WglUtil = (function () {
         if (this.cfg.useStats) {
             this.initStats();
         }
-    };
-    WglUtil.prototype.render = function () {
+    }
+    render() {
         if (this.cfg.useAsciiEffect && this.asciiEffect) {
             this.asciiEffect.render(this.glScene, this.camera);
         }
@@ -342,8 +344,8 @@ var WglUtil = (function () {
         else {
             this.glRenderer.render(this.glScene, this.camera);
         }
-    };
-    WglUtil.prototype.setCamera = function (cameraCfg, orbitCfg, trackballCfg) {
+    }
+    setCamera(cameraCfg, orbitCfg, trackballCfg) {
         if (cameraCfg) {
             this.copyCfg(cameraCfg, this.cameraCfg);
         }
@@ -359,8 +361,8 @@ var WglUtil = (function () {
         this.cameraHelper.update();
         // this.add(this.cameraHelper, null, false, false);
         this.cameraHelper.visible = this.cameraCfg.showHelper;
-    };
-    WglUtil.prototype.setScene = function (sceneCfg) {
+    }
+    setScene(sceneCfg) {
         if (this.glScene.fog) {
             this.glScene.fog = null;
         }
@@ -382,28 +384,28 @@ var WglUtil = (function () {
         if (this.sceneCfg.showAxis) {
             this.addAxisHelper(this.sceneCfg);
         }
-    };
-    WglUtil.prototype.convertHex = function (hex, opacity) {
+    }
+    convertHex(hex, opacity) {
         hex = hex.replace('#', '');
-        var r = parseInt(hex.substring(0, 2), 16);
-        var g = parseInt(hex.substring(2, 4), 16);
-        var b = parseInt(hex.substring(4, 6), 16);
-        var result = 'rgba(' + r + ',' + g + ',' + b + ',' + opacity / 100 + ')';
+        let r = parseInt(hex.substring(0, 2), 16);
+        let g = parseInt(hex.substring(2, 4), 16);
+        let b = parseInt(hex.substring(4, 6), 16);
+        let result = 'rgba(' + r + ',' + g + ',' + b + ',' + opacity / 100 + ')';
         return result;
-    };
-    WglUtil.prototype.initStats = function () {
+    }
+    initStats() {
         this.stats = new stats_1.Stats();
         this.stats.setMode(0);
         this.stats.domElement.style.position = 'absolute';
         this.stats.domElement.style.left = '0px';
         this.stats.domElement.style.top = '0px';
-        var statsElem = document.getElementById(this.cfg.statsId);
+        let statsElem = document.getElementById(this.cfg.statsId);
         if (statsElem) {
             statsElem.appendChild(this.stats.domElement);
         }
         return this.stats;
-    };
-    WglUtil.prototype.initOrbit = function (cfg) {
+    }
+    initOrbit(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.orbitCfg);
         }
@@ -411,8 +413,8 @@ var WglUtil = (function () {
         this.orbitControls = new OrbitControls(this.camera, this.glRenderer.domElement);
         this.orbitControls.minDistance = this.orbitCfg.minDistance;
         this.orbitControls.maxDistance = this.orbitCfg.maxDistance;
-    };
-    WglUtil.prototype.initTrackball = function (cfg) {
+    }
+    initTrackball(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.trackballCfg);
         }
@@ -425,27 +427,27 @@ var WglUtil = (function () {
         this.trackballControls.staticMoving = this.trackballCfg.staticMoving;
         this.trackballControls.dynamicDampingFactor = this.trackballCfg.dynamicDampingFactor;
         this.trackballControls.target.set(0, 0, 0);
-    };
-    WglUtil.prototype.initLeapCamera = function (cfg) {
+    }
+    initLeapCamera(cfg) {
         //if(cfg) {
         // this.copyCfg(cfg, this.leapCfg);
         //}
         // Leap camera controls
         this.leapCameraControls = new leapControls.LeapCameraControls(this.camera);
-    };
-    WglUtil.prototype.initDatGui = function () {
+    }
+    initDatGui() {
         this.guiControls = new function () {
             //this.prop = 0;
         };
         this.datGui = new dat.GUI();
         //datGui.add(controls, 'prop', 0, 0.5);
         return this.guiControls;
-    };
-    WglUtil.prototype.addGuiFolder = function (name) {
+    }
+    addGuiFolder(name) {
         var folder = this.datGui.addFolder(name);
         return folder;
-    };
-    WglUtil.prototype.addGuiProp = function (folder, propName, value, min, max, values) {
+    }
+    addGuiProp(folder, propName, value, min, max, values) {
         this.guiControls[propName] = !cfg.U.isEmpty(value) ? value : '';
         if (folder) {
             if (!cfg.U.isEmpty(min) && !cfg.U.isEmpty(max))
@@ -459,8 +461,8 @@ var WglUtil = (function () {
         else {
             return this.datGui.add(this.guiControls, propName, min, max);
         }
-    };
-    WglUtil.prototype.addGuiColorProp = function (folder, propName, value) {
+    }
+    addGuiColorProp(folder, propName, value) {
         this.guiControls[propName] = value;
         if (folder) {
             return folder.addColor(this.guiControls, propName);
@@ -468,20 +470,20 @@ var WglUtil = (function () {
         else {
             return this.datGui.add(this.guiControls, propName);
         }
-    };
-    WglUtil.prototype.addGuiMethod = function (folder, methodName) {
-        var wglUtil = this;
+    }
+    addGuiMethod(folder, methodName) {
+        let wglUtil = this;
         if (folder) {
             return folder.add(this.guiControls, methodName);
         }
         else {
             return this.datGui.add(this.guiControls, methodName);
         }
-    };
-    WglUtil.prototype.addGuiButton = function (folder, name, handler) {
-        var obj = {};
-        var wglUtil = this;
-        var parent = this.parent;
+    }
+    addGuiButton(folder, name, handler) {
+        let obj = {};
+        let wglUtil = this;
+        let parent = this.parent;
         obj[name] = function () {
             handler(wglUtil, parent);
         };
@@ -491,8 +493,8 @@ var WglUtil = (function () {
         else {
             return this.datGui.add(obj, name);
         }
-    };
-    WglUtil.prototype.addGuiPropValues = function (folder, propName, value, values) {
+    }
+    addGuiPropValues(folder, propName, value, values) {
         this.guiControls[propName] = value;
         if (folder) {
             return folder.add(this.guiControls, propName, values);
@@ -500,8 +502,8 @@ var WglUtil = (function () {
         else {
             return this.datGui.add(this.guiControls, propName, values);
         }
-    };
-    WglUtil.prototype.refreshGui = function () {
+    }
+    refreshGui() {
         WglUtil.refreshDatGui(this.datGui);
         /*
         for (var i = 0; i < Object.keys(this.datGui.__folders).length; i++) {
@@ -511,16 +513,16 @@ var WglUtil = (function () {
             }
         }
         */
-    };
-    WglUtil.refreshDatGui = function (datGui) {
+    }
+    static refreshDatGui(datGui) {
         for (var i = 0; i < Object.keys(datGui.__folders).length; i++) {
             var key = Object.keys(datGui.__folders)[i];
             for (var j = 0; j < datGui.__folders[key].__controllers.length; j++) {
                 datGui.__folders[key].__controllers[j].updateDisplay();
             }
         }
-    };
-    WglUtil.prototype.getGuiFolder = function (folderName) {
+    }
+    getGuiFolder(folderName) {
         for (var i = 0; i < Object.keys(this.datGui.__folders).length; i++) {
             var key = Object.keys(this.datGui.__folders)[i];
             if (key === folderName) {
@@ -528,9 +530,9 @@ var WglUtil = (function () {
             }
         }
         return null;
-    };
-    WglUtil.prototype.getGuiController = function (folderName, propName) {
-        var folder = this.getGuiFolder(folderName);
+    }
+    getGuiController(folderName, propName) {
+        let folder = this.getGuiFolder(folderName);
         if (folder) {
             for (var j = 0; j < folder.__controllers.length; j++) {
                 if (folder.__controllers[j].property === propName) {
@@ -539,12 +541,12 @@ var WglUtil = (function () {
             }
         }
         return null;
-    };
-    WglUtil.prototype.removeDatGuiFolder = function (name) {
+    }
+    removeDatGuiFolder(name) {
         WglUtil.removeDatGuiFolder(this.datGui, name);
-    };
-    WglUtil.removeDatGuiFolder = function (datGui, name) {
-        var folder = datGui.__folders[name];
+    }
+    static removeDatGuiFolder(datGui, name) {
+        let folder = datGui.__folders[name];
         if (!folder) {
             return;
         }
@@ -552,8 +554,8 @@ var WglUtil = (function () {
         datGui.__ul.removeChild(folder.domElement.parentNode);
         delete datGui.__folders[name];
         datGui.onResize();
-    };
-    WglUtil.prototype.addAxisHelper = function (sceneCfg) {
+    }
+    addAxisHelper(sceneCfg) {
         if (this.axis) {
             this.removeAxisHelper();
         }
@@ -567,26 +569,26 @@ var WglUtil = (function () {
             this.axisArrowY = this.addAxisArrow({ x: 0, y: 1, z: 0 });
             this.axisArrowZ = this.addAxisArrow({ x: 0, y: 0, z: 1 });
         }
-    };
-    WglUtil.prototype.addAxisArrow = function (axis) {
+    }
+    addAxisArrow(axis) {
         if (this.sceneCfg.useAxisArrows) {
-            var dir = new THREE.Vector3(axis.x, axis.y, axis.z);
-            var origin = new THREE.Vector3(0, 0, 0);
-            var length = this.sceneCfg.axisSize;
-            var hex = 0xffffff;
+            let dir = new THREE.Vector3(axis.x, axis.y, axis.z);
+            let origin = new THREE.Vector3(0, 0, 0);
+            let length = this.sceneCfg.axisSize;
+            let hex = 0xffffff;
             if (axis.x)
                 hex = 0xff0000;
             if (axis.y)
                 hex = 0x00ff00;
             if (axis.z)
                 hex = 0x0000ff;
-            var headLength = this.sceneCfg.axisArrowHeadLength;
-            var arrowHelper = new THREE.ArrowHelper(dir, origin, length, hex, headLength);
+            let headLength = this.sceneCfg.axisArrowHeadLength;
+            let arrowHelper = new THREE.ArrowHelper(dir, origin, length, hex, headLength);
             this.glScene.add(arrowHelper);
             return arrowHelper;
         }
-    };
-    WglUtil.prototype.removeAxisHelper = function () {
+    }
+    removeAxisHelper() {
         if (this.axis) {
             this.remove(this.axis);
             this.remove(this.axisArrowX);
@@ -594,17 +596,17 @@ var WglUtil = (function () {
             this.remove(this.axisArrowZ);
             this.axis = null;
         }
-    };
-    WglUtil.prototype.addDirLight = function (cfg, group) {
+    }
+    addDirLight(cfg, group) {
         if (cfg) {
             this.copyCfg(cfg, this.dirLightCfg);
         }
-        var dirLightHelper = this.genDirLight(cfg);
+        let dirLightHelper = this.genDirLight(cfg);
         this.add(dirLightHelper.light, group);
         this.add(dirLightHelper, group);
         return dirLightHelper;
-    };
-    WglUtil.prototype.addPointLight = function (cfg, group) {
+    }
+    addPointLight(cfg, group) {
         if (cfg) {
             this.copyCfg(cfg, this.pointLightCfg);
         }
@@ -612,17 +614,17 @@ var WglUtil = (function () {
         this.add(pointLightHelper.light, group);
         this.add(pointLightHelper, group);
         return pointLightHelper;
-    };
-    WglUtil.prototype.addHemisphereLight = function (cfg, group) {
+    }
+    addHemisphereLight(cfg, group) {
         if (cfg) {
             this.copyCfg(cfg, this.hemisphereLightCfg);
         }
-        var hemisphereLightHelper = this.genHemisphereLight(cfg);
+        let hemisphereLightHelper = this.genHemisphereLight(cfg);
         this.add(hemisphereLightHelper.light, group);
         this.add(hemisphereLightHelper, group);
         return hemisphereLightHelper;
-    };
-    WglUtil.prototype.addSpotLight = function (cfg, group) {
+    }
+    addSpotLight(cfg, group) {
         if (cfg) {
             this.copyCfg(cfg, this.spotLightCfg);
         }
@@ -630,9 +632,9 @@ var WglUtil = (function () {
         this.add(spotLightHelper.light, group);
         this.add(spotLightHelper, group);
         return spotLightHelper;
-    };
-    WglUtil.prototype.getJson = function (group) {
-        var json = {};
+    }
+    getJson(group) {
+        let json = {};
         try {
             if (group) {
                 json = group.toJSON();
@@ -645,23 +647,21 @@ var WglUtil = (function () {
             json = { error: e };
         }
         return json;
-    };
-    WglUtil.prototype.onContentChanged = function (object, group, type) {
-        var json = this.getJson(group);
-        var canvas = document.getElementById(this.cfg.canvasId);
+    }
+    onContentChanged(object, group, type) {
+        let json = this.getJson(group);
+        let canvas = document.getElementById(this.cfg.canvasId);
         if (!canvas)
             return;
-        var args = new wgl_util_content_changed_args_1.WglUtilContentChangedArgs();
+        let args = new wgl_util_content_changed_args_1.WglUtilContentChangedArgs();
         args.group = group;
         args.object = object;
         args.json = json;
         args.type = type;
         this.contentChanged = new CustomEvent('contentChanged', { 'detail': args });
         canvas.dispatchEvent(this.contentChanged);
-    };
-    WglUtil.prototype.add = function (obj, group, raiseContentChanged, isSelectable) {
-        if (raiseContentChanged === void 0) { raiseContentChanged = true; }
-        if (isSelectable === void 0) { isSelectable = true; }
+    }
+    add(obj, group, raiseContentChanged = true, isSelectable = true) {
         if (group) {
             group.add(obj);
         }
@@ -671,8 +671,7 @@ var WglUtil = (function () {
         if (isSelectable) {
             this.objects.push(obj);
             if (obj.children.length > 0) {
-                for (var _i = 0, _a = obj.children; _i < _a.length; _i++) {
-                    var child = _a[_i];
+                for (let child of obj.children) {
                     this.objects.push(child);
                 }
             }
@@ -681,19 +680,16 @@ var WglUtil = (function () {
         if (raiseContentChanged) {
             this.onContentChanged(obj, group, wgl_util_content_changed_args_1.ContentChangedType.add);
         }
-    };
-    WglUtil.prototype.addLight = function (lightHelper, group, raiseContentChanged, isSelectable) {
-        if (raiseContentChanged === void 0) { raiseContentChanged = true; }
-        if (isSelectable === void 0) { isSelectable = true; }
+    }
+    addLight(lightHelper, group, raiseContentChanged = true, isSelectable = true) {
         if (lightHelper) {
             this.add(lightHelper.light, group, raiseContentChanged, isSelectable);
             if (lightHelper.visible) {
                 this.add(lightHelper, group, raiseContentChanged, isSelectable);
             }
         }
-    };
-    WglUtil.prototype.remove = function (obj, group, raiseContentChanged) {
-        if (raiseContentChanged === void 0) { raiseContentChanged = true; }
+    }
+    remove(obj, group, raiseContentChanged = true) {
         if (group) {
             group.remove(obj);
         }
@@ -708,14 +704,13 @@ var WglUtil = (function () {
                     obj.material.dispose();
             }
             else {
-                for (var _i = 0, _a = obj.material.materials; _i < _a.length; _i++) {
-                    var mat = _a[_i];
+                for (let mat of obj.material.materials) {
                     if (mat.dispose)
                         mat.dispose();
                 }
             }
         }
-        var index = this.objects.indexOf(obj);
+        let index = this.objects.indexOf(obj);
         if (index >= 0) {
             this.objects.splice(index, 1);
         }
@@ -724,33 +719,32 @@ var WglUtil = (function () {
         if (raiseContentChanged) {
             this.onContentChanged(obj, group, wgl_util_content_changed_args_1.ContentChangedType.delete);
         }
-    };
-    WglUtil.prototype.removeLight = function (lightHelper, group, raiseContentChanged) {
-        if (raiseContentChanged === void 0) { raiseContentChanged = true; }
+    }
+    removeLight(lightHelper, group, raiseContentChanged = true) {
         if (lightHelper) {
             this.remove(lightHelper.light, group, raiseContentChanged);
             this.remove(lightHelper, group, raiseContentChanged);
         }
-    };
-    WglUtil.prototype.clear = function (group) {
-        var container = group ? group : this.glScene;
+    }
+    clear(group) {
+        let container = group ? group : this.glScene;
         while (container.children.length > 0) {
             container.remove(container.children[container.children.length - 1]);
         }
         this.onContentChanged(null, group, wgl_util_content_changed_args_1.ContentChangedType.clear);
-    };
-    WglUtil.prototype.genPlaneGeom = function (cfg) {
+    }
+    genPlaneGeom(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.planeCfg);
         }
         var geomPlane = new THREE.PlaneGeometry(this.planeCfg.width, this.planeCfg.height, this.planeCfg.widthSegments, this.planeCfg.heightSegments);
         return geomPlane;
-    };
-    WglUtil.prototype.genCircleGeom = function (cfg) {
+    }
+    genCircleGeom(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.circleCfg);
         }
-        var geomCircle;
+        let geomCircle;
         if (this.circleCfg.thetaStart && this.circleCfg.thetaLength) {
             geomCircle = new THREE.CircleGeometry(this.circleCfg.radius, this.circleCfg.segments, this.circleCfg.thetaStart, this.circleCfg.thetaLength);
         }
@@ -758,8 +752,8 @@ var WglUtil = (function () {
             geomCircle = new THREE.CircleGeometry(this.circleCfg.radius, this.circleCfg.segments);
         }
         return geomCircle;
-    };
-    WglUtil.prototype.genCubeGeom = function (cfg) {
+    }
+    genCubeGeom(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.cubeCfg);
         }
@@ -774,12 +768,12 @@ var WglUtil = (function () {
             geomCube.parameters.depthSegments = this.cubeCfg.depthSegments;
         }
         return geomCube;
-    };
-    WglUtil.prototype.genSphereGeom = function (cfg) {
+    }
+    genSphereGeom(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.sphereCfg);
         }
-        var geomSphere;
+        let geomSphere;
         if (this.sphereCfg.phiStart && this.sphereCfg.phiLength && this.sphereCfg.thetaStart && this.sphereCfg.thetaLength) {
             geomSphere = new THREE.SphereGeometry(this.sphereCfg.radius, this.sphereCfg.widthSegments, this.sphereCfg.heightSegments, this.sphereCfg.phiStart, this.sphereCfg.phiLength, this.sphereCfg.thetaStart, this.sphereCfg.thetaLength);
             return geomSphere;
@@ -790,8 +784,8 @@ var WglUtil = (function () {
         }
         geomSphere = new THREE.SphereGeometry(this.sphereCfg.radius, this.sphereCfg.widthSegments, this.sphereCfg.heightSegments);
         return geomSphere;
-    };
-    WglUtil.prototype.genCylinderGeom = function (cfg) {
+    }
+    genCylinderGeom(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.cylinderCfg);
         }
@@ -799,30 +793,30 @@ var WglUtil = (function () {
         //cylinderCfg.segmentsX, cylinderCfg.segmentsY);
         geomCylinder.height = this.cylinderCfg.height;
         return geomCylinder;
-    };
-    WglUtil.prototype.genTorusGeom = function (cfg) {
+    }
+    genTorusGeom(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.torusCfg);
         }
         var geomTorus = new THREE.TorusGeometry(this.torusCfg.radius, this.torusCfg.tube, this.torusCfg.radialSegments, this.torusCfg.tubularSegments, this.torusCfg.arc);
         return geomTorus;
-    };
-    WglUtil.prototype.genTorusKnotGeom = function (cfg) {
+    }
+    genTorusKnotGeom(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.torusKnotCfg);
         }
         var geomTorusKnot = new THREE.TorusKnotGeometry(this.torusKnotCfg.radius, this.torusKnotCfg.tube, this.torusKnotCfg.radialSegments, this.torusKnotCfg.tubularSegments, this.torusKnotCfg.p, this.torusKnotCfg.q);
         return geomTorusKnot;
-    };
-    WglUtil.prototype.genLineGeom = function (cfg) {
+    }
+    genLineGeom(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.lineCfg);
         }
         var geomLine = new THREE.Geometry();
         geomLine.vertices.push(new THREE.Vector3(this.lineCfg.start.x, this.lineCfg.start.y, this.lineCfg.start.z), new THREE.Vector3(this.lineCfg.end.x, this.lineCfg.end.y, this.lineCfg.end.z));
         return geomLine;
-    };
-    WglUtil.prototype.genTextGeom = function (cfg) {
+    }
+    genTextGeom(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.textCfg);
         }
@@ -849,8 +843,8 @@ var WglUtil = (function () {
             return textGeom;
         }
         return textGeom;
-    };
-    WglUtil.prototype.genParticleGeom = function (cfg) {
+    }
+    genParticleGeom(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.particleCfg);
         }
@@ -866,47 +860,47 @@ var WglUtil = (function () {
             geom.colors.push(color);
         }
         return geom;
-    };
-    WglUtil.prototype.genMeshBasicMat = function (cfg) {
+    }
+    genMeshBasicMat(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.matCfg);
         }
         var matCube = new THREE.MeshBasicMaterial({ color: this.matCfg.color, wireframe: this.matCfg.wireframe });
         return matCube;
-    };
-    WglUtil.prototype.genMeshLambertMat = function (cfg) {
+    }
+    genMeshLambertMat(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.matCfg);
         }
         var matCube = new THREE.MeshLambertMaterial({ color: this.matCfg.color, wireframe: this.matCfg.wireframe });
         return matCube;
-    };
-    WglUtil.prototype.genMeshPhongMat = function (cfg) {
+    }
+    genMeshPhongMat(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.matCfg);
         }
         var matCube = new THREE.MeshPhongMaterial({ color: this.matCfg.color, wireframe: this.matCfg.wireframe });
         return matCube;
-    };
-    WglUtil.prototype.genLineBasicMat = function (cfg) {
+    }
+    genLineBasicMat(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.matCfg);
         }
         var matLine = new THREE.LineBasicMaterial({ color: this.matCfg.color });
         return matLine;
-    };
-    WglUtil.prototype.genLineDashedMat = function (cfg) {
+    }
+    genLineDashedMat(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.matCfg);
         }
         var matLine = new THREE.LineDashedMaterial({ color: this.matCfg.color });
         return matLine;
-    };
-    WglUtil.prototype.genTextMat = function (cfg) {
+    }
+    genTextMat(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.textCfg);
         }
-        var mat = new THREE.MultiMaterial([
+        let mat = new THREE.MultiMaterial([
             new THREE.MeshPhongMaterial({ color: this.textCfg.frontColor !== null ? this.textCfg.frontColor : Math.random() * 0xffffff, shading: THREE.FlatShading }),
             new THREE.MeshPhongMaterial({ color: this.textCfg.sideColor !== null ? this.textCfg.sideColor : 0xffffff, shading: THREE.SmoothShading }) // side
         ]);
@@ -914,8 +908,8 @@ var WglUtil = (function () {
             this.textCfg.textMaterial = mat;
         }
         return mat;
-    };
-    WglUtil.prototype.genParticleMat = function (cfg) {
+    }
+    genParticleMat(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.particleCfg);
         }
@@ -931,20 +925,20 @@ var WglUtil = (function () {
             alphaTest: 0.5
         });
         return material;
-    };
-    WglUtil.prototype.genSpriteMat = function (cfg) {
+    }
+    genSpriteMat(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.spriteCfg);
         }
-        var oCfg = {};
+        let oCfg = {};
         if (this.spriteCfg.map)
             oCfg['map'] = this.spriteCfg.map;
         if (this.spriteCfg.color)
             oCfg['color'] = this.spriteCfg.color;
-        var mat = new THREE.SpriteMaterial(oCfg);
+        let mat = new THREE.SpriteMaterial(oCfg);
         return mat;
-    };
-    WglUtil.prototype.genPointLight = function (cfg) {
+    }
+    genPointLight(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.pointLightCfg);
         }
@@ -953,8 +947,8 @@ var WglUtil = (function () {
         this.pointLightCfg.helper = new THREE.PointLightHelper(pointLight, this.pointLightCfg.helperSphereSize);
         this.pointLightCfg.helper.visible = this.pointLightCfg.showHelper;
         return this.pointLightCfg.helper;
-    };
-    WglUtil.prototype.genDirLight = function (cfg) {
+    }
+    genDirLight(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.dirLightCfg);
         }
@@ -965,8 +959,8 @@ var WglUtil = (function () {
         this.dirLightCfg.helper = new THREE.DirectionalLightHelper(dirLight, this.dirLightCfg.size);
         this.dirLightCfg.helper.visible = this.dirLightCfg.showHelper;
         return this.dirLightCfg.helper;
-    };
-    WglUtil.prototype.genHemisphereLight = function (cfg) {
+    }
+    genHemisphereLight(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.hemisphereLightCfg);
         }
@@ -975,8 +969,8 @@ var WglUtil = (function () {
         this.hemisphereLightCfg.helper = new THREE.HemisphereLightHelper(hempisphereLight, this.hemisphereLightCfg.helperSphereSize);
         this.hemisphereLightCfg.helper.visible = this.hemisphereLightCfg.showHelper;
         return this.hemisphereLightCfg.helper;
-    };
-    WglUtil.prototype.genSpotLight = function (cfg) {
+    }
+    genSpotLight(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.spotLightCfg);
         }
@@ -985,8 +979,8 @@ var WglUtil = (function () {
         this.spotLightCfg.helper = new THREE.SpotLightHelper(spotLight);
         this.spotLightCfg.helper.visible = this.spotLightCfg.showHelper;
         return this.spotLightCfg.helper;
-    };
-    WglUtil.prototype.addLine = function (cfg, group) {
+    }
+    addLine(cfg, group) {
         if (cfg) {
             this.copyCfg(cfg, this.lineCfg);
         }
@@ -995,8 +989,8 @@ var WglUtil = (function () {
         var line = new THREE.Line(geomLine, matLine);
         this.add(line, group);
         return line;
-    };
-    WglUtil.prototype.addPlane = function (cfg, group) {
+    }
+    addPlane(cfg, group) {
         if (cfg) {
             this.copyCfg(cfg, this.planeCfg);
         }
@@ -1011,8 +1005,8 @@ var WglUtil = (function () {
         plane.receiveShadow = this.planeCfg.receiveShadow;
         this.add(plane, group);
         return plane;
-    };
-    WglUtil.prototype.addCircle = function (cfg, group) {
+    }
+    addCircle(cfg, group) {
         if (cfg) {
             this.copyCfg(cfg, this.circleCfg);
         }
@@ -1030,8 +1024,8 @@ var WglUtil = (function () {
         }
         this.add(circle, group);
         return circle;
-    };
-    WglUtil.prototype.addCube = function (cfg, group) {
+    }
+    addCube(cfg, group) {
         if (cfg) {
             this.copyCfg(cfg, this.cubeCfg);
         }
@@ -1049,8 +1043,8 @@ var WglUtil = (function () {
         }
         this.add(cube, group);
         return cube;
-    };
-    WglUtil.prototype.addSphere = function (cfg, group) {
+    }
+    addSphere(cfg, group) {
         if (cfg) {
             this.copyCfg(cfg, this.sphereCfg);
         }
@@ -1063,8 +1057,8 @@ var WglUtil = (function () {
         sphere.castShadow = this.sphereCfg.castShadow;
         this.add(sphere, group);
         return sphere;
-    };
-    WglUtil.prototype.addCylinder = function (cfg, group) {
+    }
+    addCylinder(cfg, group) {
         if (cfg) {
             this.copyCfg(cfg, this.cylinderCfg);
         }
@@ -1077,8 +1071,8 @@ var WglUtil = (function () {
         cylinder.castShadow = this.cylinderCfg.castShadow;
         this.add(cylinder, group);
         return cylinder;
-    };
-    WglUtil.prototype.addTorus = function (cfg, group) {
+    }
+    addTorus(cfg, group) {
         if (cfg) {
             this.copyCfg(cfg, this.torusCfg);
         }
@@ -1087,8 +1081,8 @@ var WglUtil = (function () {
         var torus = new THREE.Mesh(geomTorus, matTorus);
         this.add(torus, group);
         return torus;
-    };
-    WglUtil.prototype.addTorusKnot = function (cfg, group) {
+    }
+    addTorusKnot(cfg, group) {
         if (cfg) {
             this.copyCfg(cfg, this.torusCfg);
         }
@@ -1097,18 +1091,18 @@ var WglUtil = (function () {
         var torusKnot = new THREE.Mesh(geomTorusKnot, matTorusKnot);
         this.add(torusKnot, group);
         return torusKnot;
-    };
-    WglUtil.prototype.addParticles = function (cfg, group) {
+    }
+    addParticles(cfg, group) {
         if (cfg) {
             this.copyCfg(cfg, this.particleCfg);
         }
-        var geom = this.genParticleGeom(cfg);
-        var material = this.genParticleMat(cfg);
-        var system = new THREE.Points(geom, material);
+        let geom = this.genParticleGeom(cfg);
+        let material = this.genParticleMat(cfg);
+        let system = new THREE.Points(geom, material);
         this.add(system, group);
         return system;
-    };
-    WglUtil.prototype.addSprite = function (cfg, group) {
+    }
+    addSprite(cfg, group) {
         if (cfg) {
             this.copyCfg(cfg, this.spriteCfg);
         }
@@ -1119,16 +1113,16 @@ var WglUtil = (function () {
         sprite.position.z = this.spriteCfg.position.z;
         this.add(sprite, group);
         return sprite;
-    };
-    WglUtil.prototype.addTextSprite = function (spriteCfg, textureCfg, group) {
-        var texture = this.createCanvasTexture(null, textureCfg);
+    }
+    addTextSprite(spriteCfg, textureCfg, group) {
+        let texture = this.createCanvasTexture(null, textureCfg);
         spriteCfg.map = texture;
-        var matSprite = this.genSpriteMat(spriteCfg);
-        var sprite = new THREE.Sprite(matSprite);
+        let matSprite = this.genSpriteMat(spriteCfg);
+        let sprite = new THREE.Sprite(matSprite);
         var textObject = new THREE.Object3D();
-        var textWidth = textureCfg.canvas.width;
-        var textHeight = textureCfg.canvas.height;
-        var fontSize = textureCfg.canvas.fontSize;
+        let textWidth = textureCfg.canvas.width;
+        let textHeight = textureCfg.canvas.height;
+        let fontSize = textureCfg.canvas.fontSize;
         textObject.textHeight = fontSize;
         textObject.textWidth = (textWidth / textHeight) * textObject.textHeight;
         sprite.scale.set(textWidth / textHeight * fontSize, fontSize, 1);
@@ -1141,49 +1135,49 @@ var WglUtil = (function () {
         // this.add(sprite, group);
         // return textObject;
         return sprite;
-    };
-    WglUtil.prototype.addMesh = function (geom, mat, group) {
-        var mesh = new THREE.Mesh(geom, mat);
+    }
+    addMesh(geom, mat, group) {
+        let mesh = new THREE.Mesh(geom, mat);
         this.add(mesh, group);
         return mesh;
-    };
-    WglUtil.prototype.addParticleMesh = function (geom, mat, group) {
-        var particles = new THREE.Points(geom, mat);
+    }
+    addParticleMesh(geom, mat, group) {
+        let particles = new THREE.Points(geom, mat);
         this.add(particles, group);
         return particles;
-    };
-    WglUtil.prototype.setAsciiEffect = function () {
+    }
+    setAsciiEffect() {
         this.asciiEffect = new AsciiEffect(this.glRenderer);
         this.asciiEffect.setSize(window.innerWidth, window.innerHeight);
-        var canvas = document.getElementById(this.cfg.canvasId);
+        let canvas = document.getElementById(this.cfg.canvasId);
         while (canvas.children.length > 0) {
             canvas.removeChild(canvas.children[0]);
         }
         canvas.appendChild(this.asciiEffect.domElement);
-    };
-    WglUtil.prototype.setAnaglyphEffect = function () {
+    }
+    setAnaglyphEffect() {
         var width = window.innerWidth || 2;
         var height = window.innerHeight || 2;
         this.anaglyphEffect = new AnaglyphEffect(this.glRenderer, this.cfg.anaglyphFocalLength, window.innerWidth, window.innerHeight);
         this.anaglyphEffect.setSize(width, height);
-        var canvas = document.getElementById(this.cfg.canvasId);
+        let canvas = document.getElementById(this.cfg.canvasId);
         canvas.appendChild(this.glRenderer.domElement);
-    };
-    WglUtil.prototype.setStereoEffect = function () {
-        var width = window.innerWidth;
-        var height = window.innerHeight;
+    }
+    setStereoEffect() {
+        let width = window.innerWidth;
+        let height = window.innerHeight;
         this.stereoEffect = new StereoEffect(this.glRenderer);
         this.stereoEffect.eyeSeparation = 1;
         this.stereoEffect.setSize(width, height);
-        var canvas = document.getElementById(this.cfg.canvasId);
+        let canvas = document.getElementById(this.cfg.canvasId);
         canvas.appendChild(this.glRenderer.domElement);
-    };
-    WglUtil.prototype.unsetEffects = function () {
-        var width = window.innerWidth;
-        var height = window.innerHeight;
+    }
+    unsetEffects() {
+        let width = window.innerWidth;
+        let height = window.innerHeight;
         this.glRenderer.setViewport(0, 0, width, height);
-    };
-    WglUtil.prototype.setFog = function (sceneConfig) {
+    }
+    setFog(sceneConfig) {
         if (this.glScene.fog) {
             this.glScene.fog;
             this.glScene.fog = null;
@@ -1194,8 +1188,8 @@ var WglUtil = (function () {
         if (this.sceneCfg.useFog) {
             this.glScene.fog = new THREE.FogExp2(this.sceneCfg.fogColor, this.sceneCfg.fogMistDensity);
         }
-    };
-    WglUtil.prototype.genPoints = function (numPoints, cfg, group) {
+    }
+    genPoints(numPoints, cfg, group) {
         if (cfg) {
             this.copyCfg(cfg, this.pointsCfg);
         }
@@ -1206,7 +1200,7 @@ var WglUtil = (function () {
             var randomZ = this.pointsCfg.offset.z + Math.round(Math.random() * this.pointsCfg.step.z);
             points.push(new THREE.Vector3(randomX, randomY, randomZ));
         }
-        var spGroup = new THREE.Object3D(); // Group(); //Object3D();
+        let spGroup = new THREE.Object3D(); // Group(); //Object3D();
         var material = new THREE.MeshBasicMaterial({ color: this.pointsCfg.color, transparent: this.pointsCfg.transparent });
         var spGeom = new THREE.SphereGeometry(this.pointsCfg.radius);
         for (var i = 0; i < points.length; i++) {
@@ -1220,8 +1214,8 @@ var WglUtil = (function () {
         }
         this.add(spGroup, group);
         return spGroup;
-    };
-    WglUtil.prototype.rotate = function (obj, rotationSpeed) {
+    }
+    rotate(obj, rotationSpeed) {
         if (typeof (rotationSpeed) === 'object') {
             if (rotationSpeed.hasOwnProperty('x'))
                 obj.rotation.x += rotationSpeed.x;
@@ -1237,8 +1231,8 @@ var WglUtil = (function () {
                 obj.rotation.z += rotationSpeed;
             }
         }
-    };
-    WglUtil.prototype.createTextureMaterial = function (imageFile, cfg) {
+    }
+    createTextureMaterial(imageFile, cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.textureCfg);
         }
@@ -1255,21 +1249,21 @@ var WglUtil = (function () {
         var mat = new THREE.MeshPhongMaterial();
         mat.map = texture;
         return mat;
-    };
-    WglUtil.prototype.createTextureMaterials = function (imageFiles, cfg) {
+    }
+    createTextureMaterials(imageFiles, cfg) {
         var materials = [];
         for (var i = 0; i < imageFiles.length; i++) {
             materials.push(this.createTextureMaterial(imageFiles[i], cfg));
         }
         if (imageFiles.length < 6) {
-            for (var i_1 = imageFiles.length; i_1 < 6; i_1++) {
+            for (let i = imageFiles.length; i < 6; i++) {
                 materials.push(new THREE.MeshBasicMaterial());
             }
         }
         var material = new THREE.MultiMaterial(materials);
         return material;
-    };
-    WglUtil.prototype.createVideoTextureMaterial = function (imageFile, cfg) {
+    }
+    createVideoTextureMaterial(imageFile, cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.textureCfg);
         }
@@ -1294,8 +1288,8 @@ var WglUtil = (function () {
         this.textureCfg.texture = texture;
         var mat = new THREE.MeshBasicMaterial({ map: texture });
         return mat;
-    };
-    WglUtil.prototype.createCanvasTexture = function (imageFile, cfg) {
+    }
+    createCanvasTexture(imageFile, cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.textureCfg);
         }
@@ -1334,14 +1328,14 @@ var WglUtil = (function () {
         //texture1.magFilter = THREE.LinearFilter;
         texture1.needsUpdate = true;
         return texture1;
-    };
-    WglUtil.prototype.createCanvasTextureMaterial = function (imageFile, cfg) {
-        var texture1 = this.createCanvasTexture(imageFile, cfg);
+    }
+    createCanvasTextureMaterial(imageFile, cfg) {
+        let texture1 = this.createCanvasTexture(imageFile, cfg);
         var mat = new THREE.MeshPhongMaterial({ map: texture1, side: THREE.DoubleSide });
         mat.transparent = true;
         return mat;
-    };
-    WglUtil.prototype.createMesh = function (geom, mat, imageFile, cfg) {
+    }
+    createMesh(geom, mat, imageFile, cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.textureCfg);
         }
@@ -1353,21 +1347,21 @@ var WglUtil = (function () {
         mesh.position.y = this.textureCfg.position.y;
         mesh.position.z = this.textureCfg.position.z;
         return mesh;
-    };
-    WglUtil.prototype.createParticleMesh = function (geom, mat) {
+    }
+    createParticleMesh(geom, mat) {
         var particles = new THREE.Points(geom, mat);
         return particles;
-    };
-    WglUtil.prototype.genShaderMaterial = function (cfg) {
+    }
+    genShaderMaterial(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.shadersCfg);
         }
-        var vShaderElem = document.getElementById(this.shadersCfg.vertexShaderId);
-        var vShader = '';
+        let vShaderElem = document.getElementById(this.shadersCfg.vertexShaderId);
+        let vShader = '';
         if (vShaderElem)
             vShader = vShaderElem.innerText;
-        var fShaderElem = document.getElementById(this.shadersCfg.fragmentShaderId);
-        var fShader = '';
+        let fShaderElem = document.getElementById(this.shadersCfg.fragmentShaderId);
+        let fShader = '';
         if (fShaderElem)
             fShader = fShaderElem.innerText;
         var mat = new THREE.ShaderMaterial({
@@ -1377,8 +1371,8 @@ var WglUtil = (function () {
             fragmentShader: fShader,
         });
         return mat;
-    };
-    WglUtil.prototype.loadShaderFile = function (shaderFile, loadHandler) {
+    }
+    loadShaderFile(shaderFile, loadHandler) {
         var fileUrl;
         if (shaderFile.startsWith('http')) {
             fileUrl = shaderFile;
@@ -1391,18 +1385,17 @@ var WglUtil = (function () {
                 loadHandler(data);
             }
         });
-    };
-    WglUtil.prototype.addSkyBoxFromFile = function (cfg, group) {
-        var _this = this;
+    }
+    addSkyBoxFromFile(cfg, group) {
         if (cfg) {
             this.copyCfg(cfg, this.skyBoxCfg);
         }
         var cubeMap = new THREE.CubeTexture([]);
         cubeMap.format = THREE.RGBFormat;
         var loader = new THREE.ImageLoader();
-        loader.load(this.skyBoxCfg.srcFile, function (image) {
-            var getSide = function (x, y) {
-                var size = _this.skyBoxCfg.size ? _this.skyBoxCfg.size : 1024;
+        loader.load(this.skyBoxCfg.srcFile, (image) => {
+            let getSide = (x, y) => {
+                var size = this.skyBoxCfg.size ? this.skyBoxCfg.size : 1024;
                 var canvas = document.createElement('canvas');
                 canvas.width = size;
                 canvas.height = size;
@@ -1430,8 +1423,8 @@ var WglUtil = (function () {
         var skyBox = new THREE.Mesh(new THREE.BoxGeometry(this.skyBoxCfg.width, this.skyBoxCfg.height, this.skyBoxCfg.depth), skyBoxMaterial);
         this.add(skyBox, group);
         return skyBox;
-    };
-    WglUtil.prototype.addSkyBoxFromFiles = function (cfg, group) {
+    }
+    addSkyBoxFromFiles(cfg, group) {
         if (cfg) {
             this.copyCfg(cfg, this.skyBoxCfg);
         }
@@ -1461,13 +1454,13 @@ var WglUtil = (function () {
         });
         //TODO: undefined, need to ensure it's valid object.
         return skyBox;
-    };
-    WglUtil.prototype.loadObjModel = function (cfg, objModelFile, textureFile, onLoad, onProgress, onError) {
+    }
+    loadObjModel(cfg, objModelFile, textureFile, onLoad, onProgress, onError) {
         if (cfg) {
             this.copyCfg(cfg, this.objModelCfg);
         }
         var manager = new THREE.LoadingManager();
-        manager.onProgress = function (item, loaded, total) {
+        manager.onProgress = (item, loaded, total) => {
             //console.log( item, loaded, total );
         };
         var texture = new THREE.Texture();
@@ -1495,8 +1488,8 @@ var WglUtil = (function () {
                 onError(xhr);
             }
         });
-    };
-    WglUtil.prototype.loadObjMtlModel = function (cfg, objModelFile, mtlFile, onLoad, onProgress, onError) {
+    }
+    loadObjMtlModel(cfg, objModelFile, mtlFile, onLoad, onProgress, onError) {
         if (cfg) {
             this.copyCfg(cfg, this.objModelCfg);
         }
@@ -1515,13 +1508,13 @@ var WglUtil = (function () {
                 onError(xhr);
             }
         });
-    };
-    WglUtil.prototype.createText = function (cfg) {
+    }
+    createText(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.textCfg);
         }
-        var textGeom = this.genTextGeom(cfg);
-        var mat = this.genTextMat(cfg);
+        let textGeom = this.genTextGeom(cfg);
+        let mat = this.genTextMat(cfg);
         var centerOffset = -0.5 * (textGeom.boundingBox.max.x - textGeom.boundingBox.min.x);
         var textMesh1 = new THREE.Mesh(textGeom, mat);
         textMesh1.position.x = centerOffset + this.textCfg.offsetX;
@@ -1544,37 +1537,37 @@ var WglUtil = (function () {
                 cfg.textMeshMirror = textMesh2;
         }
         return textMesh1;
-    };
-    WglUtil.prototype.createTextMaterial = function (color1, color2) {
+    }
+    createTextMaterial(color1, color2) {
         var mat = new THREE.MultiMaterial([
             new THREE.MeshPhongMaterial({ color: color1 ? color1 : Math.random() * 0xffffff, shading: THREE.FlatShading }),
             new THREE.MeshPhongMaterial({ color: color2 ? color2 : 0xffffff, shading: THREE.SmoothShading }) // side
         ]);
         return mat;
-    };
-    WglUtil.prototype.centerMeshX = function (mesh, offsetX) {
+    }
+    centerMeshX(mesh, offsetX) {
         var geom = mesh.geometry;
         var centerOffset = -0.5 * (geom.boundingBox.max.x - geom.boundingBox.min.x);
         mesh.position.x = centerOffset + (offsetX ? offsetX : 0);
-    };
-    WglUtil.prototype.centerMeshY = function (mesh, offsetY) {
+    }
+    centerMeshY(mesh, offsetY) {
         var geom = mesh.geometry;
         var centerOffset = -0.5 * (geom.boundingBox.max.y - geom.boundingBox.min.y);
         mesh.position.y = centerOffset + (offsetY ? offsetY : 0);
-    };
-    WglUtil.prototype.centerMeshZ = function (mesh, offsetZ) {
+    }
+    centerMeshZ(mesh, offsetZ) {
         var geom = mesh.geometry;
         var centerOffset = -0.5 * (geom.boundingBox.max.z - geom.boundingBox.min.z);
         mesh.position.z = centerOffset + (offsetZ ? offsetZ : 0);
-    };
+    }
     // birds
-    WglUtil.prototype.animateBirds = function () {
+    animateBirds() {
         if (!this.birds) {
             return;
         }
-        var boid;
-        var bird;
-        var color;
+        let boid;
+        let bird;
+        let color;
         for (var i = 0, il = this.birds.length; i < il; i++) {
             boid = this.boids[i];
             boid.run(this.boids);
@@ -1587,15 +1580,15 @@ var WglUtil = (function () {
             bird.phase = (bird.phase + (Math.max(0, bird.rotation.z) + 0.1)) % 62.83;
             bird.geometry.vertices[5].y = bird.geometry.vertices[4].y = Math.sin(bird.phase) * 5;
         }
-    };
-    WglUtil.prototype.initBirds = function (cfg, group) {
+    }
+    initBirds(cfg, group) {
         if (cfg) {
             this.copyCfg(cfg, this.birdsCfg);
         }
         this.birds = [];
         this.boids = [];
-        var boid, bird;
-        for (var i = 0; i < this.birdsCfg.count; i++) {
+        let boid, bird;
+        for (let i = 0; i < this.birdsCfg.count; i++) {
             boid = this.boids[i] = new boid_1.Boid();
             boid.position.x = Math.random() * 400 - 200;
             boid.position.y = Math.random() * 400 - 200;
@@ -1610,20 +1603,20 @@ var WglUtil = (function () {
             bird.scale.set(this.birdsCfg.scale, this.birdsCfg.scale, this.birdsCfg.scale);
             this.add(bird, group);
         }
-    };
-    WglUtil.prototype.repulseBoids = function (vector) {
+    }
+    repulseBoids(vector) {
         if (!this.boids) {
             return;
         }
-        var boid;
-        for (var i = 0, il = this.boids.length; i < il; i++) {
+        let boid;
+        for (let i = 0, il = this.boids.length; i < il; i++) {
             boid = this.boids[i];
             vector.z = boid.position.z;
             boid.repulse(vector);
         }
-    };
+    }
     // window resize
-    WglUtil.prototype.windowResize = function () {
+    windowResize() {
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
         this.glRenderer.setSize(window.innerWidth, window.innerHeight);
@@ -1631,44 +1624,44 @@ var WglUtil = (function () {
             this.cssRenderer.setSize(window.innerWidth, window.innerHeight);
         }
         this.render();
-    };
-    WglUtil.prototype.addSelectedObjectBoxHelper = function (group) {
+    }
+    addSelectedObjectBoxHelper(group) {
         if (this.dndSelectedObject) {
             this.dndSelectedObjectBoxHelper = new THREE.BoxHelper(this.dndSelectedObject);
             this.add(this.dndSelectedObjectBoxHelper, group, false, false);
         }
-    };
-    WglUtil.prototype.removeSelectedObjectBoxHelper = function (group) {
+    }
+    removeSelectedObjectBoxHelper(group) {
         if (this.dndSelectedObjectBoxHelper) {
             this.remove(this.dndSelectedObjectBoxHelper, group, false);
             this.dndSelectedObjectBoxHelper = null;
         }
-    };
-    WglUtil.prototype.updateSelectedObjectBoxHelper = function () {
+    }
+    updateSelectedObjectBoxHelper() {
         if (this.dndSelectedObjectBoxHelper && this.dndSelectedObject) {
             this.dndSelectedObjectBoxHelper.update(this.dndSelectedObject);
         }
-    };
-    WglUtil.prototype.addBoxHelper = function (obj, group) {
+    }
+    addBoxHelper(obj, group) {
         if (obj) {
-            var objBoxHelper = new THREE.BoxHelper(obj);
+            let objBoxHelper = new THREE.BoxHelper(obj);
             this.add(objBoxHelper, group, false, false);
             return objBoxHelper;
         }
         return null;
-    };
-    WglUtil.prototype.removeBoxHelper = function (objBoxHelper, group) {
+    }
+    removeBoxHelper(objBoxHelper, group) {
         if (objBoxHelper) {
             this.remove(objBoxHelper, group, false);
         }
-    };
-    WglUtil.prototype.updateBoxHelper = function (obj, objBoxHelper) {
+    }
+    updateBoxHelper(obj, objBoxHelper) {
         if (obj && objBoxHelper) {
             objBoxHelper.update(obj);
         }
-    };
+    }
     // mouse events
-    WglUtil.prototype.getMouseUpIntersects = function (event) {
+    getMouseUpIntersects(event) {
         var containerWidth = window.innerWidth;
         var containerHeight = window.innerHeight;
         var mouseVector = new THREE.Vector3(0, 0, 1);
@@ -1679,10 +1672,8 @@ var WglUtil = (function () {
         this.glScene.updateMatrixWorld();
         var intersects = this.raycaster.intersectObjects(this.glScene.children, true);
         return intersects;
-    };
-    WglUtil.prototype.dndMouseMove = function (event, moveObject, changePointer) {
-        if (moveObject === void 0) { moveObject = true; }
-        if (changePointer === void 0) { changePointer = true; }
+    }
+    dndMouseMove(event, moveObject = true, changePointer = true) {
         event.preventDefault();
         this.mousePosition.x = (event.clientX / window.innerWidth) * 2 - 1;
         this.mousePosition.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -1694,7 +1685,7 @@ var WglUtil = (function () {
             return;
         }
         var intersects = this.raycaster.intersectObjects(this.objects); // .filter(item => item.visible);
-        var canvasElem = document.getElementById(this.cfg.canvasId);
+        let canvasElem = document.getElementById(this.cfg.canvasId);
         if (intersects.length > 0) {
             if (this.dndIntersectedObject != intersects[0].object) {
                 /*
@@ -1729,17 +1720,17 @@ var WglUtil = (function () {
                 canvasElem.style.cursor = 'auto';
             }
         }
-    };
-    WglUtil.prototype.setIntersectedObjectColor = function () {
+    }
+    setIntersectedObjectColor() {
         if (this.dndIntersectedObject && this.dndIntersectedObject.material.color && this.dndIntersectedObject.currentHex) {
-            var color = this.dndIntersectedObject.material.color;
+            let color = this.dndIntersectedObject.material.color;
             if (color.setHex) {
                 color.setHex(this.dndIntersectedObject.currentHex);
                 this.dndIntersectedObject.material.color = color;
             }
         }
-    };
-    WglUtil.prototype.dndMouseDown = function (event) {
+    }
+    dndMouseDown(event) {
         event.preventDefault();
         this.raycaster.setFromCamera(this.mousePosition, this.camera);
         var intersects = this.raycaster.intersectObjects(this.objects); // .filter(item => item.visible);
@@ -1750,110 +1741,110 @@ var WglUtil = (function () {
             if (this.raycaster.ray.intersectPlane(this.dndPlane, this.dndIntersection)) {
                 this.dndOffset.copy(this.dndIntersection).sub(this.dndSelectedObject.position);
             }
-            var canvasElem = document.getElementById(this.cfg.canvasId);
+            let canvasElem = document.getElementById(this.cfg.canvasId);
             if (canvasElem) {
                 canvasElem.style.cursor = 'move';
             }
         }
-    };
-    WglUtil.prototype.dndMouseUp = function (event) {
+    }
+    dndMouseUp(event) {
         event.preventDefault();
         if (this.cfg.useTrackball && this.trackballControls)
             this.trackballControls.enabled = true;
         if (this.dndIntersectedObject) {
             this.dndSelectedObject = null;
         }
-        var canvasElem = document.getElementById(this.cfg.canvasId);
+        let canvasElem = document.getElementById(this.cfg.canvasId);
         if (canvasElem) {
             canvasElem.style.cursor = 'auto';
         }
-    };
-    WglUtil.rgbToHex = function (R, G, B) {
+    }
+    static rgbToHex(R, G, B) {
         return this.toHex(R) + this.toHex(G) + this.toHex(B);
-    };
-    WglUtil.hexToRgb = function (h) {
+    }
+    static hexToRgb(h) {
         var r = this.hexToR(h);
         var g = this.hexToG(h);
         var b = this.hexToB(h);
         return { r: r, g: g, b: b };
-    };
-    WglUtil.hexToR = function (h) {
+    }
+    static hexToR(h) {
         return parseInt(this.cutHex(h).substring(0, 2), 16);
-    };
-    WglUtil.hexToG = function (h) {
+    }
+    static hexToG(h) {
         return parseInt(this.cutHex(h).substring(2, 4), 16);
-    };
-    WglUtil.hexToB = function (h) {
+    }
+    static hexToB(h) {
         return parseInt(this.cutHex(h).substring(4, 6), 16);
-    };
-    WglUtil.cutHex = function (h) {
+    }
+    static cutHex(h) {
         return (h.charAt(0) == '#') ? h.substring(1, 7) : h;
-    };
-    WglUtil.toHex = function (n) {
+    }
+    static toHex(n) {
         n = parseInt(n, 10);
         if (isNaN(n))
             return '00';
         n = Math.max(0, Math.min(n, 255));
         return '0123456789ABCDEF'.charAt((n - n % 16) / 16)
             + '0123456789ABCDEF'.charAt(n % 16);
-    };
-    WglUtil.getColorFromRgb = function (value) {
-        var r = value.r;
+    }
+    static getColorFromRgb(value) {
+        let r = value.r;
         if (isNaN(r))
             r = 0;
-        var g = value.g;
+        let g = value.g;
         if (isNaN(g))
             g = 0;
-        var b = value.b;
+        let b = value.b;
         if (isNaN(b))
             b = 0;
-        var color = new THREE.Color("rgb(" + r + ", " + g + ", " + b + ")");
+        let color = new THREE.Color(`rgb(${r}, ${g}, ${b})`);
         return color;
-    };
-    WglUtil.getColorFromHex = function (value) {
-        var rgb = this.hexToRgb(value);
+    }
+    static getColorFromHex(value) {
+        let rgb = this.hexToRgb(value);
         return this.getColorFromRgb(rgb);
-    };
-    WglUtil.isRGB = function (value) {
+    }
+    static isRGB(value) {
         if (!value)
             return false;
         return !cfg.U.isEmpty(value.r) && !cfg.U.isEmpty(value.g) && !cfg.U.isEmpty(value.b);
-    };
-    WglUtil.getColor = function (value) {
+    }
+    static getColor(value) {
         if (!value)
             return 0xFFFFFF;
         if (this.isRGB(value)) {
             return '#' + this.rgbToHex(value.r, value.g, value.b);
         }
         return value;
-    };
-    WglUtil.getThreeColor = function (value) {
+    }
+    static getThreeColor(value) {
         if (!value)
             return new THREE.Color();
         if (this.isRGB(value)) {
             return this.getColorFromRgb(value);
         }
         return this.getColorFromHex(value);
-    };
-    WglUtil.prototype.genPointsMeshFromGeometry = function (geometry, cfg) {
+    }
+    genPointsMeshFromGeometry(geometry, cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.pointsFromGeomCfg);
         }
         var geom = geometry; // new THREE.BufferGeometry().fromGeometry(geometry);
         var pointsMat = new THREE.PointsMaterial({ size: this.pointsFromGeomCfg.size, color: this.pointsFromGeomCfg.color });
-        var pointsMesh = new THREE.Points(geom, pointsMat);
+        let pointsMesh = new THREE.Points(geom, pointsMat);
         pointsMesh.scale.x = pointsMesh.scale.y = pointsMesh.scale.z = this.pointsFromGeomCfg.scale;
         pointsMesh.updateMatrix();
         pointsMesh.visible = true;
         this.add(pointsMesh);
         return pointsMesh;
-    };
-    WglUtil.prototype.genPointsMeshFromMesh = function (mesh, cfg) {
+    }
+    genPointsMeshFromMesh(mesh, cfg) {
         var pointsMesh = this.genPointsMeshFromGeometry(mesh.geometry, cfg);
         pointsMesh.position.set(mesh.position.x, mesh.position.y, mesh.position.z);
         return pointsMesh;
-    };
-    WglUtil.prototype.toggleMeshMaterials = function (mesh, visible) {
+    }
+    toggleMeshMaterials(mesh, visible) {
         mesh.material.transparent = true;
         mesh.material.opacity = visible ? 1 : 0;
         if (mesh.material.materials) {
@@ -1862,8 +1853,8 @@ var WglUtil = (function () {
                 mesh.material.materials[i].transparent = true;
             }
         }
-    };
-    WglUtil.prototype.addGridHelper = function (cfg) {
+    }
+    addGridHelper(cfg) {
         if (this.grid) {
             this.removeGridHelper();
         }
@@ -1873,55 +1864,55 @@ var WglUtil = (function () {
         this.grid = new THREE.GridHelper(this.sceneCfg.gridSize, this.sceneCfg.gridDivisions, this.sceneCfg.gridColorCenterLine, this.sceneCfg.gridColor);
         this.add(this.grid, null, false, false);
         return this.grid;
-    };
-    WglUtil.prototype.removeGridHelper = function () {
+    }
+    removeGridHelper() {
         if (this.grid) {
             this.remove(this.grid);
             this.grid = null;
         }
-    };
-    WglUtil.prototype.addGroup = function (group) {
-        var newGroup = new THREE.Group();
+    }
+    addGroup(group) {
+        let newGroup = new THREE.Group();
         this.add(newGroup, group);
         return newGroup;
-    };
-    WglUtil.prototype.getObjectFromJson = function (objJson, geometries, materials) {
-    };
-    WglUtil.prototype.transform = function (tipPosition, w, h) {
-        var width = 150; // ???
-        var height = 150; // ???
-        var minHeight = 100; // ???
-        var ftx = tipPosition[0];
-        var fty = tipPosition[1];
+    }
+    getObjectFromJson(objJson, geometries, materials) {
+    }
+    transform(tipPosition, w, h) {
+        let width = 150; // ???
+        let height = 150; // ???
+        let minHeight = 100; // ???
+        let ftx = tipPosition[0];
+        let fty = tipPosition[1];
         ftx = (ftx > width ? width - 1 : (ftx < -width ? -width + 1 : ftx));
         fty = (fty > 2 * height ? 2 * height - 1 : (fty < minHeight ? minHeight + 1 : fty));
-        var x = THREE.Math.mapLinear(ftx, -width, width, 0, w);
-        var y = THREE.Math.mapLinear(fty, 2 * height, minHeight, 0, h);
+        let x = THREE.Math.mapLinear(ftx, -width, width, 0, w);
+        let y = THREE.Math.mapLinear(fty, 2 * height, minHeight, 0, h);
         return [x, y];
-    };
+    }
     ;
-    WglUtil.prototype.leapFocusObject = function (frame) {
-        var hl = frame.hands.length;
-        var fl = frame.pointables.length;
+    leapFocusObject(frame) {
+        let hl = frame.hands.length;
+        let fl = frame.pointables.length;
         console.log('hl', hl);
         console.log('fl', fl);
         if (hl == 1 && fl == 1) {
-            var f = frame.pointables[0];
-            var container = this.glRenderer.domElement;
-            var width = container.clientWidth;
-            var height = container.clientHeight;
-            var coords = this.transform(f.tipPosition, width, height);
-            var vpx = (coords[0] / width) * 2 - 1;
-            var vpy = -(coords[1] / height) * 2 + 1;
-            var vector = new THREE.Vector3(vpx, vpy, 0.5);
+            let f = frame.pointables[0];
+            let container = this.glRenderer.domElement;
+            let width = container.clientWidth;
+            let height = container.clientHeight;
+            let coords = this.transform(f.tipPosition, width, height);
+            let vpx = (coords[0] / width) * 2 - 1;
+            let vpy = -(coords[1] / height) * 2 + 1;
+            let vector = new THREE.Vector3(vpx, vpy, 0.5);
             // this.projector.unprojectVector(vector, this.camera);
-            var raycaster = new THREE.Raycaster(this.camera.position, vector.sub(this.camera.position).normalize());
-            var intersects = raycaster.intersectObjects(this.objects);
+            let raycaster = new THREE.Raycaster(this.camera.position, vector.sub(this.camera.position).normalize());
+            let intersects = raycaster.intersectObjects(this.objects);
             if (intersects.length > 0) {
-                var i = 0;
+                let i = 0;
                 while (!intersects[i].object.visible)
                     i++;
-                var intersected = intersects[i];
+                let intersected = intersects[i];
                 this.addBoxHelper(intersected);
                 return this.objects.indexOf(intersected.object);
             }
@@ -1932,9 +1923,9 @@ var WglUtil = (function () {
         }
         ;
         return -2;
-    };
-    WglUtil.prototype.initLeapObjectControls = function (threeObj) {
-        var objectControls = new leapControls.LeapObjectControls(this.camera, threeObj);
+    }
+    initLeapObjectControls(threeObj) {
+        let objectControls = new leapControls.LeapObjectControls(this.camera, threeObj);
         objectControls.rotateEnabled = true;
         objectControls.rotateSpeed = 3;
         objectControls.rotateHands = 1;
@@ -1949,48 +1940,47 @@ var WglUtil = (function () {
         objectControls.panFingers = [6, 12];
         objectControls.panRightHanded = false; // for left-handed person
         this.leapObjectsControls.push(objectControls);
-    };
-    WglUtil.prototype.leapSelectObject = function (frame) {
-        var hl = frame.hands.length;
-        var fl = frame.pointables.length;
+    }
+    leapSelectObject(frame) {
+        let hl = frame.hands.length;
+        let fl = frame.pointables.length;
         if (hl == 1 && fl == 1) {
-            var f = frame.pointables[0];
-            var container = this.glRenderer.domElement;
-            var width = container.clientWidth;
-            var height = container.clientHeight;
-            var coords = this.transform(f.tipPosition, width, height);
+            let f = frame.pointables[0];
+            let container = this.glRenderer.domElement;
+            let width = container.clientWidth;
+            let height = container.clientHeight;
+            let coords = this.transform(f.tipPosition, width, height);
         }
         else {
         }
-    };
-    WglUtil.prototype.objectsOverlap = function (obj1, obj2) {
+    }
+    objectsOverlap(obj1, obj2) {
         if (!obj1 || !obj2 || !obj1.geometry || !obj2.geometry)
             return false;
         obj1.geometry.computeBoundingBox();
-        var box1 = obj1.geometry.boundingBox;
+        let box1 = obj1.geometry.boundingBox;
         if (!box1)
             return false;
         obj2.geometry.computeBoundingBox;
-        var box2 = obj2.geometry.boundingBox;
+        let box2 = obj2.geometry.boundingBox;
         if (!box2)
             return false;
         return box1.intersectsBox(box2);
-    };
-    WglUtil.prototype.checkObjectOverlap = function (threeObj, otherObjs) {
+    }
+    checkObjectOverlap(threeObj, otherObjs) {
         if (!threeObj || !otherObjs)
             return false;
-        for (var _i = 0, otherObjs_1 = otherObjs; _i < otherObjs_1.length; _i++) {
-            var obj = otherObjs_1[_i];
+        for (let obj of otherObjs) {
             if (obj.uuid !== threeObj.uuid) {
-                var overlap = this.objectsOverlap(threeObj, obj);
+                let overlap = this.objectsOverlap(threeObj, obj);
                 if (overlap) {
                     return true;
                 }
             }
         }
         return false;
-    };
-    WglUtil.prototype.setMirrorCubeCamera = function (cfg) {
+    }
+    setMirrorCubeCamera(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.mirrorCubeCfg);
         }
@@ -1999,40 +1989,45 @@ var WglUtil = (function () {
         this.mirrorCubeCamera.renderTarget.antialiasing = true;
         this.glScene.add(this.mirrorCubeCamera);
         return this.mirrorCubeCamera;
-    };
-    WglUtil.prototype.genMirrorCubeMat = function (cfg) {
+    }
+    genMirrorCubeMat(cfg) {
         if (!this.mirrorCubeCamera) {
             this.setMirrorCubeCamera(cfg);
         }
-        var mirrorCubeMat = new THREE.MeshBasicMaterial({ envMap: this.mirrorCubeCamera.renderTarget.texture });
+        let mirrorCubeMat = new THREE.MeshBasicMaterial({ envMap: this.mirrorCubeCamera.renderTarget.texture });
         return mirrorCubeMat;
-    };
-    WglUtil.prototype.addMirrorCube = function (cfg) {
+    }
+    addMirrorCube(cfg) {
         if (cfg) {
             this.copyCfg(cfg, this.mirrorCubeCfg);
         }
         this.setMirrorCubeCamera(cfg);
-        var cubeGeom = new THREE.CubeGeometry(this.mirrorCubeCfg.dimension.x, this.mirrorCubeCfg.dimension.y, this.mirrorCubeCfg.dimension.z, 1, 1, 1);
-        var mirrorCubeMat = this.genMirrorCubeMat(cfg);
+        let cubeGeom = new THREE.CubeGeometry(this.mirrorCubeCfg.dimension.x, this.mirrorCubeCfg.dimension.y, this.mirrorCubeCfg.dimension.z, 1, 1, 1);
+        let mirrorCubeMat = this.genMirrorCubeMat(cfg);
         this.mirrorCube = new THREE.Mesh(cubeGeom, mirrorCubeMat);
         this.mirrorCube.position.set(this.mirrorCubeCfg.position.x, this.mirrorCubeCfg.position.y, this.mirrorCubeCfg.position.z);
-        var p = this.mirrorCube.position;
+        let p = this.mirrorCube.position;
         this.mirrorCubeCamera.position.set(p.x, p.y, p.z);
         this.glScene.add(this.mirrorCube);
         return this.mirrorCube;
-    };
-    WglUtil.prototype.updateMirrorCube = function () {
+    }
+    updateMirrorCube() {
         if (!this.mirrorCubeCamera || !this.mirrorCube)
             return;
         this.mirrorCube.visible = false;
         this.mirrorCubeCamera.updateCubeMap(this.glRenderer, this.glScene);
         this.mirrorCube.visible = true;
-    };
-    WglUtil.prototype.createCssObject = function (w, h, position, rotation, url) {
-        var html = "\n<div style=\"width:" + w + "px; height:" + h + "px;\">\n    <iframe src=\"" + url + "\" width=\"" + w + "\" height=\"" + h + "\"></iframe>\n</div>\n        ";
-        var div = document.createElement('div');
+    }
+    createCssObject(w, h, position, rotation, url, id) {
+        var id = id ? id : 'iframe1';
+        var html = `
+<div id="div${id}" style="width:${w}px; height:${h}px;">
+    <iframe id="${id}" name="${id}" src="${url}" width="${w}" height="${h}"></iframe>
+</div>
+        `;
+        let div = document.createElement('div');
         div.innerHTML = html;
-        var cssObject = new css3d.CSS3DObject(div);
+        let cssObject = new css3d.CSS3DObject(div);
         cssObject.position.x = position.x;
         cssObject.position.y = position.y;
         cssObject.position.z = position.z;
@@ -2040,15 +2035,15 @@ var WglUtil = (function () {
         cssObject.rotation.y = rotation.y;
         cssObject.rotation.z = rotation.z;
         return cssObject;
-    };
-    WglUtil.prototype.createCss3DPagePlane = function (w, h, position, rotation) {
-        var material = new THREE.MeshBasicMaterial({
+    }
+    createCss3DPagePlane(w, h, position, rotation) {
+        let material = new THREE.MeshBasicMaterial({
             color: 0x000000,
             opacity: 0.0,
             side: THREE.DoubleSide
         });
-        var geometry = new THREE.PlaneGeometry(w, h);
-        var mesh = new THREE.Mesh(geometry, material);
+        let geometry = new THREE.PlaneGeometry(w, h);
+        let mesh = new THREE.Mesh(geometry, material);
         mesh.position.x = position.x;
         mesh.position.y = position.y;
         mesh.position.z = position.z;
@@ -2056,14 +2051,27 @@ var WglUtil = (function () {
         mesh.rotation.y = rotation.y;
         mesh.rotation.z = rotation.z;
         return mesh;
-    };
-    WglUtil.prototype.create3dPage = function (w, h, position, rotation, url, group) {
-        var plane = this.createCss3DPagePlane(w, h, position, rotation);
+    }
+    create3dPage(w, h, position, rotation, url, id, group) {
+        let plane = this.createCss3DPagePlane(w, h, position, rotation);
         this.add(plane, group, true, true);
-        var cssObject = this.createCssObject(w, h, position, rotation, url);
+        var cssObject = this.createCssObject(w, h, position, rotation, url, id);
         this.cssScene.add(cssObject);
-    };
-    WglUtil.prototype.setCssRenderer = function () {
+    }
+    refresh3dPage(id, url) {
+        if (!url || !id)
+            return;
+        var div = document.getElementById(`div${id}`);
+        if (div && url) {
+            while (div.firstChild) {
+                div.removeChild(div.firstChild);
+            }
+            var w = div.style.width;
+            var h = div.style.height;
+            div.innerHTML = `<iframe id="${id}" name="${id}" src="${url}" width="${w}" height="${h}"></iframe>`;
+        }
+    }
+    setCssRenderer() {
         this.cssRenderer = new css3d.CSS3DRenderer();
         this.cssRenderer.setSize(window.innerWidth, window.innerHeight);
         this.cssRenderer.domElement.style.position = 'absolute';
@@ -2072,7 +2080,7 @@ var WglUtil = (function () {
         this.glRenderer.domElement.style.zIndex = 0;
         this.glRenderer.domElement.style.top = 0;
         this.cssScene = new THREE.Scene();
-    };
-    return WglUtil;
-}());
+    }
+}
 exports.WglUtil = WglUtil;
+//# sourceMappingURL=wgl-util.js.map

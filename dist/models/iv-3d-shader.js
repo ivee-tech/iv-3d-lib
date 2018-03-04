@@ -1,18 +1,14 @@
 "use strict";
-var wgl_util_cfgs_1 = require('../wgl-util-cfgs');
-var Iv3dShader = (function () {
-    function Iv3dShader() {
+const wgl_util_cfgs_1 = require('../wgl-util-cfgs');
+class Iv3dShader {
+    constructor() {
         this.uniforms = [];
         this.timeExpr = new wgl_util_cfgs_1.Expr();
     }
-    return Iv3dShader;
-}());
+}
 exports.Iv3dShader = Iv3dShader;
-var Iv3dUniform = (function () {
-    function Iv3dUniform() {
-    }
-    return Iv3dUniform;
-}());
+class Iv3dUniform {
+}
 exports.Iv3dUniform = Iv3dUniform;
 (function (Iv3dUniformType) {
     Iv3dUniformType[Iv3dUniformType['f'] = 'f'] = 'f';
@@ -21,3 +17,4 @@ exports.Iv3dUniform = Iv3dUniform;
     Iv3dUniformType[Iv3dUniformType['t'] = 't'] = 't';
 })(exports.Iv3dUniformType || (exports.Iv3dUniformType = {}));
 var Iv3dUniformType = exports.Iv3dUniformType;
+//# sourceMappingURL=iv-3d-shader.js.map

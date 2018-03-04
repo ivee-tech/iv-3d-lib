@@ -1,8 +1,8 @@
 "use strict";
-var Iv3dObjectProperty = (function () {
-    function Iv3dObjectProperty() {
+class Iv3dObjectProperty {
+    constructor() {
         this.values = null;
     }
-    return Iv3dObjectProperty;
-}());
+}
 exports.Iv3dObjectProperty = Iv3dObjectProperty;
+//# sourceMappingURL=iv-3d-object-property.js.map

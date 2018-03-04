@@ -1,6 +1,6 @@
 "use strict";
-var Iv3dObject = (function () {
-    function Iv3dObject() {
+class Iv3dObject {
+    constructor() {
         this.name = '';
         this.uuid = '';
         this.url = '';
@@ -15,8 +15,7 @@ var Iv3dObject = (function () {
         this.sVisibleRuntime = 'true';
         this.dataSourceItem = null;
     }
-    return Iv3dObject;
-}());
+}
 exports.Iv3dObject = Iv3dObject;
 (function (Iv3dObjectType) {
     Iv3dObjectType[Iv3dObjectType["none"] = ''] = "none";
@@ -63,3 +62,4 @@ var Iv3dGeometryType = exports.Iv3dGeometryType;
     Iv3dMaterialType[Iv3dMaterialType["multi"] = 'MultiMaterial'] = "multi";
 })(exports.Iv3dMaterialType || (exports.Iv3dMaterialType = {}));
 var Iv3dMaterialType = exports.Iv3dMaterialType;
+//# sourceMappingURL=iv-3d-object.js.map

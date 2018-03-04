@@ -1,8 +1,8 @@
 "use strict";
-var iv_3d_object_1 = require('./iv-3d-object');
-var cfg = require('../wgl-util-cfgs');
-var Iv3dDataSource = (function () {
-    function Iv3dDataSource() {
+const iv_3d_object_1 = require('./iv-3d-object');
+const cfg = require('../wgl-util-cfgs');
+class Iv3dDataSource {
+    constructor() {
         this.title = '';
         this.items = [];
         this.type = iv_3d_object_1.Iv3dObjectType.cube;
@@ -16,14 +16,10 @@ var Iv3dDataSource = (function () {
         this.dataSourceIndex = 0;
         this.urls = [];
     }
-    return Iv3dDataSource;
-}());
+}
 exports.Iv3dDataSource = Iv3dDataSource;
-var Iv3dDataSourceItem = (function () {
-    function Iv3dDataSourceItem() {
-    }
-    return Iv3dDataSourceItem;
-}());
+class Iv3dDataSourceItem {
+}
 exports.Iv3dDataSourceItem = Iv3dDataSourceItem;
 (function (Iv3dDataSourceValueFormat) {
     Iv3dDataSourceValueFormat[Iv3dDataSourceValueFormat["none"] = ''] = "none";
@@ -44,13 +40,13 @@ var Iv3dSortType = exports.Iv3dSortType;
     Iv3dDataType[Iv3dDataType["date"] = 'date'] = "date";
 })(exports.Iv3dDataType || (exports.Iv3dDataType = {}));
 var Iv3dDataType = exports.Iv3dDataType;
-var Iv3dDataSourceUrl = (function () {
-    function Iv3dDataSourceUrl() {
+class Iv3dDataSourceUrl {
+    constructor() {
         this.url = '';
         this.patternUrl = '';
         this.title = '';
         this.type = iv_3d_object_1.Iv3dObjectType.cube;
     }
-    return Iv3dDataSourceUrl;
-}());
+}
 exports.Iv3dDataSourceUrl = Iv3dDataSourceUrl;
+//# sourceMappingURL=iv-3d-data-source.js.map

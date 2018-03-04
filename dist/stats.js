@@ -2,8 +2,8 @@
  * @author mrdoob / http://mrdoob.com/
  */
 "use strict";
-var Stats = (function () {
-    function Stats() {
+class Stats {
+    constructor() {
         this.ms = 0;
         this.msMin = Infinity;
         this.msMax = 0;
@@ -14,7 +14,7 @@ var Stats = (function () {
         this.REVISION = 11;
         this.container = document.createElement('div');
         this.startTime = Date.now();
-        var prevTime = this.startTime;
+        let prevTime = this.startTime;
         this.container.id = 'stats';
         this.container.addEventListener('mousedown', function (event) { event.preventDefault(); this.setMode(++this.mode % 2); }, false);
         this.container.style.cssText = 'width:80px;opacity:0.9;cursor:pointer';
@@ -55,16 +55,12 @@ var Stats = (function () {
             this.msGraph.appendChild(bar);
         }
     }
-    Object.defineProperty(Stats.prototype, "domElement", {
-        get: function () { return this.container; },
-        enumerable: true,
-        configurable: true
-    });
-    Stats.prototype.updateGraph = function (dom, value) {
+    get domElement() { return this.container; }
+    updateGraph(dom, value) {
         var child = dom.appendChild(dom.firstChild);
         child.style.height = value + 'px';
-    };
-    Stats.prototype.setMode = function (value) {
+    }
+    setMode(value) {
         this.mode = value;
         switch (this.mode) {
             case 0:
@@ -76,11 +72,11 @@ var Stats = (function () {
                 this.msDiv.style.display = 'block';
                 break;
         }
-    };
-    Stats.prototype.begin = function () {
+    }
+    begin() {
         this.startTime = Date.now();
-    };
-    Stats.prototype.end = function () {
+    }
+    end() {
         var time = Date.now();
         this.ms = time - this.startTime;
         this.msMin = Math.min(this.msMin, this.ms);
@@ -98,10 +94,10 @@ var Stats = (function () {
             this.frames = 0;
         }
         return time;
-    };
-    Stats.prototype.update = function () {
+    }
+    update() {
         this.startTime = this.end();
-    };
-    return Stats;
-}());
+    }
+}
 exports.Stats = Stats;
+//# sourceMappingURL=stats.js.map

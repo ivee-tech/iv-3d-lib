@@ -9,13 +9,13 @@
     Iv3dLightType[Iv3dLightType["spot"] = 'SpotLight'] = "spot";
 })(exports.Iv3dLightType || (exports.Iv3dLightType = {}));
 var Iv3dLightType = exports.Iv3dLightType;
-var Iv3dLight = (function () {
-    function Iv3dLight() {
+class Iv3dLight {
+    constructor() {
         this.name = '';
         this.uuid = '';
         this.type = Iv3dLightType.none;
         this.lightProps = [];
     }
-    return Iv3dLight;
-}());
+}
 exports.Iv3dLight = Iv3dLight;
+//# sourceMappingURL=iv-3d-light.js.map

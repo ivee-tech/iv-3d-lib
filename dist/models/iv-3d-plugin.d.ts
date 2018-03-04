@@ -5,6 +5,8 @@ export declare class Iv3dPlugin {
     cfg: NameValue[];
     static createSkyboxPlugin(): Iv3dPlugin;
     static createThreejsTerrainPlugin(): Iv3dPlugin;
+    static createMirrorCubePlugin(): Iv3dPlugin;
+    static createGoogleMapsPlugin(): Iv3dPlugin;
 }
 export declare enum Iv3dPluginType {
     none,
@@ -12,4 +14,6 @@ export declare enum Iv3dPluginType {
     skybox,
     dataSource,
     threejsTerrain,
+    mirrorCube,
+    googleMaps,
 }

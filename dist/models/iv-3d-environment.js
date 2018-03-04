@@ -1,7 +1,5 @@
 "use strict";
-var Iv3dEnvironment = (function () {
-    function Iv3dEnvironment() {
-    }
-    return Iv3dEnvironment;
-}());
+class Iv3dEnvironment {
+}
 exports.Iv3dEnvironment = Iv3dEnvironment;
+//# sourceMappingURL=iv-3d-environment.js.map

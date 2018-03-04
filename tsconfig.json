@@ -1,12 +1,12 @@
 {
     "compilerOptions": {
       "experimentalDecorators": true,
-      "lib": ["es6"],
+      "lib": ["es5", "dom"],
       "module": "commonjs",
-      "target": "es5",
+      "target": "es6",
       "moduleResolution": "node",
       "emitDecoratorMetadata": true,
-      "sourceMap": false,
+      "sourceMap": true,
       "declaration": true,
       "outDir": "dist",
       "removeComments": false,
