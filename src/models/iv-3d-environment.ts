@@ -6,4 +6,5 @@
     assetsRelUrl: string;
     usersDataUrl: string;
     useAlertForErrors: boolean;
+	formMetaBaseUrl: string;
 }

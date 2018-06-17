@@ -819,7 +819,7 @@ export class Iv3dObjectHandler {
                     // props.push(<Iv3dObjectProperty>{ prop1: null, prop2: 'font', type: 'object', label: 'Font data', value: response, hidden: true });
                     geom = this.genGeom(Iv3dGeometryType.text, props, w);
                     this.genObjectWithMat(obj, geom, mainGroup, w, demo, isPublic, key, threeObjCallback);
-                });
+                }, (arg) => console.log(arg), (error) => console.log(error));
                 break;
             case Iv3dObjectType.particles:
                 geom = this.genGeom(Iv3dGeometryType.particles, obj.geometryProps, w);

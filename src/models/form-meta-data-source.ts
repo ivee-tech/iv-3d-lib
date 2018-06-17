@@ -1,4 +1,9 @@
 export class FormMetaDataSource {
-    key: string;
-    data: any[] = [];
+    id: string;
+    name: string;
+    description: string;
+    type: number;
+    value: any;
+    label: string;
+    isInactive: boolean;
 }

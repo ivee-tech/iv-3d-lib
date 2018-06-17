@@ -11,13 +11,13 @@
       "outDir": "dist",
       "removeComments": false,
       "typeRoots": [
-        "node_modules/@types"
+        "node_modules/@types", "custom_typings"
       ]
     },
     "files": [
       "src/index.ts"
     ],
     "exclude": [
-      "node_modules"
+      "node_modules", ".vscode", "dist"
     ]
   }

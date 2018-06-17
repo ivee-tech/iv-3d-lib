@@ -1,3 +1,4 @@
+import { FieldType } from './models/form-meta-field';
 export { Bird } from './bird';
 export { Boid } from './boid';
 export { CameraTimelinePlugin } from './camera-timeline-plugin';
@@ -7,6 +8,7 @@ export { Iv3dObjectHandler } from './iv-3d-object-handler';
 export { SkyBoxPlugin } from './skybox-plugin';
 export { Stats } from './stats';
 export { ThreeJsTerrainPlugin } from './threejs-terrain-plugin';
+export { TextAttrLinesPlugin } from './text-attrlines-plugin';
 export { 
     AudioCfg, BirdsCfg, CameraCfg, CanvasCfg, CircleCfg, CssCfg, CubeCfg, CylinderCfg, DirLightCfg, Expr, ExprXYZ, GridHelperCfg,
     HempisphereLightCfg, LightCfg, LineCfg, MirrorCubeCfg, ObjModelCfg, OrbitCfg, ParticleCfg, PlaneCfg, PointLightCfg, PointsCfg,
@@ -36,5 +38,6 @@ export { MirrorCubePlugin } from './mirror-cube-plugin';
 export { GoogleMapsPlugin } from './google-maps-plugin';
 export { FormInstance } from './models/form-instance';
 export { 
-    FormMeta, FormMetaDataSource, FormMetaField, FormMetaValidation, ValidationType, FormMetaView 
+    FormMeta, FormMetaDataSource, FormMetaField, FieldType, FormMetaValidation, ValidationType, FormMetaView, ViewType, AppInstance
 } from './models/form-meta.index';
+export { ModelBase } from './models/model-base';

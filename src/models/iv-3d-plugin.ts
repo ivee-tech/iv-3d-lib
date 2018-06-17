@@ -6,6 +6,7 @@ export class Iv3dPlugin {
 
     id: string;
     type: Iv3dPluginType = Iv3dPluginType.none;
+    name: string;
     cfg: NameValue[] = [];
 
 
@@ -76,6 +77,20 @@ export class Iv3dPlugin {
         };
         return p;
     }
+
+    static createTextAttrLinesPlugin(): Iv3dPlugin {
+        let p: Iv3dPlugin = <Iv3dPlugin>{
+            id: KGen.uuid(),
+            type: Iv3dPluginType.textAttrLines,
+            cfg: [
+                <NameValue>{ id: KGen.uuid(6), name: 'textMeshId', value: '' },
+                <NameValue>{ id: KGen.uuid(6), name: 'shaderId', value: '' },
+                <NameValue>{ id: KGen.uuid(6), name: 'amplitude', value: '' },
+                <NameValue>{ id: KGen.uuid(6), name: 'customColor', value: '' },
+            ]
+        };
+        return p;
+    }
 }
 
 export enum Iv3dPluginType {
@@ -86,4 +101,6 @@ export enum Iv3dPluginType {
     threejsTerrain = <any>'threejsTerrain',
     mirrorCube = <any>'mirrorCube',
     googleMaps = <any>'googleMaps',
+    textAttrLines = <any>'textAttrLines',
+    custom = <any>'custom'
 }
