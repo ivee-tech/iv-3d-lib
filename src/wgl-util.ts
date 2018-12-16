@@ -4,10 +4,10 @@ import { Stats } from './stats';
 import * as cfg from './wgl-util-cfgs';
 import { Bird } from './bird';
 import { Boid } from './boid';
-// import OrbitControls = require('three-orbitcontrols');
-import OrbitControls from 'three-orbitcontrols';
-// import TrackballControls = require('three-trackballcontrols');
-import TrackballControls from 'three-trackballcontrols';
+import OrbitControls = require('three-orbitcontrols');
+// import OrbitControls from 'three-orbitcontrols';
+import TrackballControls = require('three-trackballcontrols');
+// import TrackballControls from 'three-trackballcontrols';
 import * as leapControls from 'threeleapcontrols';
 import StereoEffect = require('three-stereoeffect');
 import AnaglyphEffect = require('three-anaglypheffect');
@@ -1572,8 +1572,8 @@ export class WglUtil {
         context1.fillRect(0, 0, canvas1.width, canvas1.height);
         context1.font = this.textureCfg.canvas.font;
         context1.fillStyle = this.textureCfg.canvas.textColor; //this.convertHex(textureCfg.canvas.textColor.toString(16), 100); //'rgba(255, 0, 0, 1)';
-        context1.textAlign = this.textureCfg.canvas.textAlign;
-        context1.textBaseline = this.textureCfg.canvas.textBaseline;
+        context1.textAlign = <CanvasTextAlign>this.textureCfg.canvas.textAlign;
+        context1.textBaseline = <CanvasTextBaseline>this.textureCfg.canvas.textBaseline;
         /*
         var textWidth = context1.measureText(this.textureCfg.canvas.text).width;
         context1.fillText(this.textureCfg.canvas.text, (canvas1.width - textWidth) / 2, (canvas1.height + parseInt(this.textureCfg.canvas.font)) / 2);
