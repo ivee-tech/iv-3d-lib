@@ -33,7 +33,7 @@ export class Stats {
         let prevTime = this.startTime;
 
         this.container.id = 'stats';
-        this.container.addEventListener( 'mousedown', function ( event ) { event.preventDefault(); this.setMode( ++ this.mode % 2 ) }, false );
+        this.container.addEventListener( 'mousedown', ( event ) => { event.preventDefault(); this.setMode( ++ this.mode % 2 ) }, false );
         this.container.style.cssText = 'width:80px;opacity:0.9;cursor:pointer';
 
         this.fpsDiv = document.createElement( 'div' );

@@ -1,4 +1,4 @@
-﻿export const PUBLIC_USER: string = 'public@ivee.tech';
+﻿export const PUBLIC_USER: string = 'demo';
 export const PUBLIC_DIR: string = 'public';
 
 export class UserService {

@@ -14,6 +14,7 @@ import AnaglyphEffect = require('three-anaglypheffect');
 import AsciiEffect = require('three-asciieffect');
 import * as css3d from 'three-css3drenderer';
 import { WglUtilContentChangedArgs, ContentChangedType } from './wgl-util-content-changed-args';
+import { OBJLoader } from 'three/examples/js/loaders/OBJLoader.js';
 
 
 export class WglUtil {
@@ -22,7 +23,7 @@ export class WglUtil {
     public glScene: THREE.Scene;
     public camera: THREE.Camera;
     public cameraHelper: THREE.CameraHelper;
-    public glRenderer: THREE.WebGlRenderer;
+    public glRenderer: THREE.WebGLRenderer;
     public raycaster: THREE.Raycaster;
     public orbitControls: OrbitControls;
     public trackballControls: TrackballControls;
@@ -55,6 +56,7 @@ export class WglUtil {
     private contentChanged: CustomEvent;
 
     constructor() {
+        console.log(OBJLoader);
         this.cfg = <cfg.WglUtilCfg>{
             useAxis: true,
             useOrbit: true,
@@ -327,7 +329,7 @@ export class WglUtil {
         var request = new XMLHttpRequest();
         request.open('GET', url, true);
 
-        request.onload = function () {
+        request.onload = () => {
             if (request.status >= 200 && request.status < 400) {
                 // Success!
                 // var data = JSON.parse(request.responseText);
@@ -345,7 +347,7 @@ export class WglUtil {
             }
         };
 
-        request.onerror = function (err) {
+        request.onerror = (err) => {
             console.error('Error returned from server', err);
             if (onError) {
                 onError(err);
@@ -369,7 +371,7 @@ export class WglUtil {
         this.glScene = new THREE.Scene();
 
 	    if(this.rendererCfg.useCanvas) {
-		    this.glRenderer = new THREE.CanvasRenderer();
+		    this.glRenderer = null; // new THREE.CanvasRenderer();
 	    }
 	    else {
 		    this.glRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: this.rendererCfg.antialias });
@@ -607,7 +609,7 @@ export class WglUtil {
         let obj = {};
         let wglUtil: WglUtil = this;
         let parent = this.parent;
-        obj[name] = function () {
+        obj[name] = () => {
             handler(wglUtil, parent);
         }
 	    if(folder) {
@@ -941,7 +943,7 @@ export class WglUtil {
             this.cylinderCfg.radiusSegments, this.cylinderCfg.heightSegments, 
             this.cylinderCfg.openEnded, this.cylinderCfg.thetaStart, this.cylinderCfg.thetaLength);
 	    //cylinderCfg.segmentsX, cylinderCfg.segmentsY);
-        geomCylinder.height = this.cylinderCfg.height;
+        geomCylinder.parameters.height = this.cylinderCfg.height;
 	    return geomCylinder;
     }
 
@@ -984,15 +986,15 @@ export class WglUtil {
             curveSegments: this.textCfg.curveSegments,
 
             font: this.textCfg.font,
-            weight: this.textCfg.weight,
-            style: this.textCfg.style,
+            // weight: this.textCfg.weight,
+            // style: this.textCfg.style,
 
             bevelThickness: this.textCfg.bevelThickness,
             bevelSize: this.textCfg.bevelSize,
             bevelEnabled: this.textCfg.bevelEnabled,
 
-            material: this.textCfg.material,
-            extrudeMaterial: this.textCfg.extrudeMaterial
+            // material: this.textCfg.material,
+            // extrudeMaterial: this.textCfg.extrudeMaterial
 
         });
 
@@ -1051,7 +1053,7 @@ export class WglUtil {
                 Math.random() * range - range / 2,
                 Math.random() * range - range / 2
             );
-            particle.userData = 'Particle ' + i;
+            // particle.userData = 'Particle ' + i;
             geom.vertices.push(particle);
             var color = new THREE.Color(0x00FF00);
             //color.setHSL(color.getHSL().h, color.getHSL().s, Math.random() * color.getHSL().l);
@@ -1163,7 +1165,7 @@ export class WglUtil {
         }
         var dirLight = new THREE.DirectionalLight(this.dirLightCfg.color, this.dirLightCfg.intensity);
         dirLight.position.set(this.dirLightCfg.position.x, this.dirLightCfg.position.y, this.dirLightCfg.position.z);
-        dirLight.shadow.camera.fov = this.dirLightCfg.shadowCameraFov;
+        // dirLight.shadow.camera.fov = this.dirLightCfg.shadowCameraFov;
         dirLight.castShadow = this.dirLightCfg.castShadow;
         this.dirLightCfg.helper = new THREE.DirectionalLightHelper(dirLight, this.dirLightCfg.size);
         this.dirLightCfg.helper.visible = this.dirLightCfg.showHelper;
@@ -1361,8 +1363,8 @@ export class WglUtil {
         let textWidth = textureCfg.canvas.width;
         let textHeight = textureCfg.canvas.height;
         let fontSize = textureCfg.canvas.fontSize;
-        textObject.textHeight = fontSize;
-        textObject.textWidth = (textWidth / textHeight) * textObject.textHeight;
+        // textObject.textHeight = fontSize;
+        // textObject.textWidth = (textWidth / textHeight) * textObject.textHeight;
         sprite.scale.set(textWidth / textHeight * fontSize, fontSize, 1);
 
         //  sprite.position.set(10,10,0);
@@ -1647,7 +1649,7 @@ export class WglUtil {
 	    else {
 		    fileUrl = this.shadersCfg.srcDir + encodeURIComponent(shaderFile);
 	    }
-        this.getUrl(fileUrl, function (data) {
+        this.getUrl(fileUrl, (data) => {
             if (loadHandler) {
                 loadHandler(data);
             }
@@ -1726,7 +1728,7 @@ export class WglUtil {
 	    var cubeMap = new THREE.CubeTexture([]);
 	    //var textureCube = THREE.ImageUtils.loadTextureCube(urls);
 	    var loader = new THREE.CubeTextureLoader();
-	    loader.load(urls, function(textureCube) {
+	    loader.load(urls, (textureCube) => {
 		    //var material = new THREE.MeshBasicMaterial({ color: 0xffffff, envMap: textureCube });
 		    cubeMap = textureCube;
 
@@ -1759,18 +1761,20 @@ export class WglUtil {
 	    };
 	    var texture = new THREE.Texture();
 	    var txetureLoader = new THREE.ImageLoader(manager);
-	    txetureLoader.load(this.objModelCfg.srcDir + textureFile, function (image) {
+	    txetureLoader.load(this.objModelCfg.srcDir + textureFile, (image) => {
 
 		    texture.image = image;
-		    texture.needsUpdate = true;
-
+            // texture.anisotropy = this.glRenderer.getMaxAnisotropy();
+            texture.minFilter = THREE.LinearFilter;
+            texture.needsUpdate = true;
 	    } );
 	    var loader = new THREE.OBJLoader(manager);
-	    loader.load(this.objModelCfg.srcDir + objModelFile, function (object) {
+	    loader.load(this.objModelCfg.srcDir + objModelFile, (object) => {
 
-		    object.traverse(function (child) {
+		    object.traverse((child) => {
 			    if (child instanceof THREE.Mesh) {
-				    child.material.map = texture;
+                    child.material.map = texture;
+                    child.material.shading = THREE.SmoothShading;
 			    }
 		    });
 
@@ -1778,11 +1782,11 @@ export class WglUtil {
 			    onLoad(object);
 		    }
 
-	    }, function(xhr) {
+	    }, (xhr) => {
 		    if(onProgress) {
 			    onProgress(xhr);
 		    }
-	    }, function(xhr) {
+	    }, (xhr) => {
 		    if(onError) {
 			    onError(xhr);
 		    }
@@ -1790,6 +1794,7 @@ export class WglUtil {
 
     }
 
+    /*
     loadObjMtlModel (cfg, objModelFile, mtlFile, onLoad, onProgress, onError) {
 	    if(cfg) {
             this.copyCfg(cfg, this.objModelCfg);
@@ -1814,6 +1819,7 @@ export class WglUtil {
 	    });
 
     }
+    */
 
     createText (cfg) {
 	    if(cfg) {
@@ -1860,8 +1866,8 @@ export class WglUtil {
 
     createTextMaterial  (color1, color2) {
         var mat = new THREE.MultiMaterial([
-		    new THREE.MeshPhongMaterial({ color: color1 ? color1 : Math.random() * 0xffffff, shading: THREE.FlatShading }), // front
-		    new THREE.MeshPhongMaterial({ color: color2 ? color2 : 0xffffff, shading: THREE.SmoothShading }) // side
+		    new THREE.MeshPhongMaterial({ color: color1 ? color1 : Math.random() * 0xffffff, /*shading: THREE.FlatShading*/ }), // front
+		    new THREE.MeshPhongMaterial({ color: color2 ? color2 : 0xffffff, /*shading: THREE.SmoothShading*/ }) // side
         ]);
         return mat;
     }
@@ -2215,7 +2221,7 @@ export class WglUtil {
         return this.getColorFromHex(value);
     }
 
-    genPointsMeshFromGeometry  (geometry, cfg) {
+    genPointsMeshFromGeometry  (geometry, cfg, group?) {
         if (cfg) {
             this.copyCfg(cfg, this.pointsFromGeomCfg);
         }
@@ -2228,12 +2234,13 @@ export class WglUtil {
 
         pointsMesh.visible = true;
 
-        this.add(pointsMesh);
+        this.add(pointsMesh, group);
         return pointsMesh;
     }
 
-    genPointsMeshFromMesh  (mesh, cfg) {
-        var pointsMesh = this.genPointsMeshFromGeometry(mesh.geometry, cfg);
+    genPointsMeshFromMesh  (mesh, cfg, group?) {
+        var geom = new THREE.Geometry().fromBufferGeometry(mesh.geometry);
+        var pointsMesh = this.genPointsMeshFromGeometry(geom, cfg, group);
         pointsMesh.position.set(mesh.position.x, mesh.position.y, mesh.position.z);
         return pointsMesh;
     }
@@ -2429,7 +2436,7 @@ export class WglUtil {
     }
 
     createCssObject(w: number, h: number, position: THREE.Vector3, rotation: THREE.Vector3, url: string, id?: string) {
-        var id = id ? id : 'iframe1';
+        var id: string = id ? id : 'iframe1';
         var html = `
 <div id="div${id}" style="width:${w}px; height:${h}px;">
     <iframe id="${id}" name="${id}" src="${url}" width="${w}" height="${h}"></iframe>

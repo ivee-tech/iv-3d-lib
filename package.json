@@ -1,9 +1,9 @@
 {
   "name": "iv-3d-lib",
-  "version": "1.0.5",
+  "version": "1.0.13",
   "description": "A reusable ThreeJS library providing features for Ivee 3D Editor.",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -32,7 +32,6 @@
   "dependencies": {
     "dat-gui": "^0.5.0",
     "expr-eval": "^1.0.0",
-    "leapjs": "^0.6.4",
     "nosleep.js": "^0.7.0",
     "numeral": "^2.0.6",
     "requirejs": "^2.3.2",
@@ -50,5 +49,19 @@
     "three.regular.helvetiker": "^1.0.0",
     "threeleapcontrols": "^1.0.1",
     "tween.js": "^16.6.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [],
+    "parserOptions": {
+      "ecmaVersion": 2020,
+      "sourceType": "module"
+    },
+    "rules": {
+      "no-inferrable-types": 1
+    }
   }
 }

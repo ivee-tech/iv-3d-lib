@@ -480,7 +480,7 @@ export class Iv3dObjectHandler {
         <Iv3dObjectProperty>{ prop1: null, prop2: 'background-color', type: 'string', label: 'Background color', value: this.cssCfg['background-color']},
     ];
 
-    public static TweenEasings = {
+    public static TweenEasings: { [index: string]: any } = {
         'Linear.None': TWEEN.Easing.Linear.None,
         'Quadratic.In': TWEEN.Easing.Quadratic.In,
         'Quadratic.Out': TWEEN.Easing.Quadratic.Out,
@@ -1307,7 +1307,7 @@ export class Iv3dObjectHandler {
         let userKey = '';
         if (!demo) userKey = `/${this.userSvc.userKey}`;
         if (isPublic) userKey = `/${PUBLIC_DIR}/${key}`;
-        let fullFileName = `${this.environment.usersDataUrl}${userName}${userKey}/${fileName}`;
+        let fullFileName = `${this.environment.usersDataUrl}/${userName}${userKey}/${fileName}`;
         return fullFileName;
     }
 
