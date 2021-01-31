@@ -12,7 +12,8 @@
       "typeRoots": [
         "node_modules/@types", "custom_typings"
       ],
-      "allowJs": true
+      "allowJs": true,
+      "skipLibCheck": true
     },
     "files": [
       "src/index.ts"
