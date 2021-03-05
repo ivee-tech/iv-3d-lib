@@ -1197,7 +1197,11 @@ export class Iv3dObjectHandler {
         threeObj.name = obj.name;
         threeObj.url = obj.url;
         threeObj.panels = obj.contentPanels;
-    }
+        console.log('obj.visibleRuntime', obj.uuid, obj.visibleRuntime);
+        if(obj.visibleRuntime === false) { // only hide the object if the visibleRuntime property is set to false
+            threeObj.visible = false;
+        }
+}
 
     setIv3dLightProps(obj: Iv3dLight, threeLightHelper: THREE.Object3D) {
         obj.uuid = threeLightHelper.uuid;
