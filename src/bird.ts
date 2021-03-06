@@ -1,7 +1,7 @@
 // import THREE = require('./libs/three');
 import * as THREE from 'three';
 
-export class Bird extends THREE.Geometry {
+export class Bird extends THREE.BufferGeometry {
 
 	// var scope = this;
 

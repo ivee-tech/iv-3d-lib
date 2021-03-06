@@ -938,7 +938,7 @@ export class Iv3dObjectHandler {
                 geom = w.genParticleGeom(this.getParticleCfg(props));
                 break;
             default:
-                geom = new THREE.Geometry();
+                geom = new THREE.BufferGeometry();
                 break;
         }
         //for (let prop of props) {
@@ -1339,7 +1339,7 @@ export class Iv3dObjectHandler {
         });
     }
 
-    createCanvasTexture(obj: Iv3dObject, geom: THREE.Geometry, w: WglUtil, imgFile: string, demo: boolean, isPublic: boolean, key: string) {
+    createCanvasTexture(obj: Iv3dObject, geom: THREE.BufferGeometry, w: WglUtil, imgFile: string, demo: boolean, isPublic: boolean, key: string) {
         if (!obj || !geom) return;
         let textureCfg: cfg.TextureCfg = this.getTextureCfg(obj.materialProps);
         geom.computeBoundingBox();
@@ -1351,7 +1351,7 @@ export class Iv3dObjectHandler {
         return texture;
     }
 
-    genObjectWithMat(obj: Iv3dObject, geom: THREE.Geometry, mainGroup: any, w: WglUtil, demo: boolean, isPublic: boolean, key: string, threeObjCallback: Function) {
+    genObjectWithMat(obj: Iv3dObject, geom: THREE.BufferGeometry, mainGroup: any, w: WglUtil, demo: boolean, isPublic: boolean, key: string, threeObjCallback: Function) {
         let threeObj: THREE.Object3D;
         let useCanvasProp = this.getProp('useCanvas', obj.materialProps);
         let textureProp = this.getProp('texture', obj.materialProps);
@@ -1389,7 +1389,7 @@ export class Iv3dObjectHandler {
         }
     }
 
-    genParticlesWithMat(obj: Iv3dObject, geom: THREE.Geometry, mainGroup: any, w: WglUtil, demo: boolean, isPublic: boolean, key: string, threeObjCallback: Function) {
+    genParticlesWithMat(obj: Iv3dObject, geom: THREE.BufferGeometry, mainGroup: any, w: WglUtil, demo: boolean, isPublic: boolean, key: string, threeObjCallback: Function) {
         let threeObj: THREE.Points;
         let textureProp = this.getProp('texture', obj.materialProps);
         if (textureProp && !cfg.U.isEmptyString(textureProp.value)) {

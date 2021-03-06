@@ -2,8 +2,6 @@ import * as THREE from 'three';
 import * as dat from 'dat-gui';
 import { Stats } from './stats';
 import * as cfg from './wgl-util-cfgs';
-import { Bird } from './bird';
-import { Boid } from './boid';
 import OrbitControls = require('three-orbitcontrols');
 // import OrbitControls from 'three-orbitcontrols';
 import TrackballControls = require('three-trackballcontrols');
@@ -225,10 +223,6 @@ export class WglUtil {
 	    sideColor: null
     }
 
-    public birdsCfg: cfg.BirdsCfg = <cfg.BirdsCfg>{
-        count: 100, avoidWalls: true, worldSize: <cfg.Size3D>{ width: 500, height: 500, depth: 400 }, scale: 1
-    }
-
     /*
     public gridHelperCfg: cfg.GridHelperCfg = <cfg.GridHelperCfg>{
         size: 10,
@@ -251,9 +245,6 @@ export class WglUtil {
         dimension: <cfg.XYZ>{ x: 4, y: 4, z: 1 },
         position: <cfg.XYZ>{ x: 100, y: 100, z: 100 }
     };
-
-    private birds;
-    private boids;
 
     private mousePosition: THREE.Vector3 = new THREE.Vector2();
 
@@ -967,7 +958,7 @@ export class WglUtil {
 	    if(cfg) {
             this.copyCfg(cfg, this.lineCfg);
 	    }
-        var geomLine = new THREE.Geometry();
+        var geomLine = new THREE.BufferGeometry();
         geomLine.vertices.push(
             new THREE.Vector3(this.lineCfg.start.x, this.lineCfg.start.y, this.lineCfg.start.z),
             new THREE.Vector3(this.lineCfg.end.x, this.lineCfg.end.y, this.lineCfg.end.z)
@@ -1045,8 +1036,9 @@ export class WglUtil {
         if (cfg) {
             this.copyCfg(cfg, this.particleCfg);
         }
-        var geom = new THREE.Geometry();
+        var geom = new THREE.BufferGeometry();
         var range = this.particleCfg.range;
+        var vertices = [];
         for (var i = 0; i < this.particleCfg.count; i++) {
             var particle = new THREE.Vector3(
                 Math.random() * range - range / 2,
@@ -1054,12 +1046,14 @@ export class WglUtil {
                 Math.random() * range - range / 2
             );
             // particle.userData = 'Particle ' + i;
-            geom.vertices.push(particle);
+            vertices.push(particle);
+            /*
             var color = new THREE.Color(0x00FF00);
-            //color.setHSL(color.getHSL().h, color.getHSL().s, Math.random() * color.getHSL().l);
             color.setHSL(Math.random(), 1.0, 0.5);
             geom.colors.push(color);
+            */
         }
+        geom.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
         return geom;
     }
 
@@ -1890,80 +1884,6 @@ export class WglUtil {
         mesh.position.z = centerOffset + (offsetZ ? offsetZ : 0);
     }
 
-// birds
-
-    animateBirds  () {
-        if (!this.birds) {
-            return;
-        }
-        let boid: any;
-        let bird: any;
-        let color: THREE.Color;
-        for (var i = 0, il = this.birds.length; i < il; i++) {
-
-            boid = this.boids[i];
-            boid.run(this.boids);
-
-            bird = this.birds[i];
-            bird.position.copy(this.boids[i].position);
-
-            color = bird.material.color;
-            color.r = color.g = color.b = (500 - bird.position.z) / 1000;
-
-            bird.rotation.y = Math.atan2(-boid.velocity.z, boid.velocity.x);
-            bird.rotation.z = Math.asin(boid.velocity.y / boid.velocity.length());
-
-            bird.phase = (bird.phase + (Math.max(0, bird.rotation.z) + 0.1)) % 62.83;
-            bird.geometry.vertices[5].y = bird.geometry.vertices[4].y = Math.sin(bird.phase) * 5;
-
-        }
-    }
-
-    initBirds(cfg, group?) {
-
-        if (cfg) {
-            this.copyCfg(cfg, this.birdsCfg);
-        }
-        this.birds = [];
-        this.boids = [];
-
-        let boid, bird;
-
-        for (let i = 0; i < this.birdsCfg.count; i++) {
-
-            boid = this.boids[i] = new Boid();
-            boid.position.x = Math.random() * 400 - 200;
-            boid.position.y = Math.random() * 400 - 200;
-            boid.position.z = Math.random() * 400 - 200;
-            boid.velocity.x = Math.random() * 2 - 1;
-            boid.velocity.y = Math.random() * 2 - 1;
-            boid.velocity.z = Math.random() * 2 - 1;
-            boid.setAvoidWalls(this.birdsCfg.avoidWalls);
-            boid.setWorldSize(this.birdsCfg.worldSize.width, this.birdsCfg.worldSize.height, this.birdsCfg.worldSize.depth);
-
-            bird = this.birds[i] = new THREE.Mesh(new Bird(), new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff, side: THREE.DoubleSide }));
-            bird.phase = Math.floor(Math.random() * 62.83);
-            bird.scale.set(this.birdsCfg.scale, this.birdsCfg.scale, this.birdsCfg.scale);
-            this.add(bird, group);
-
-        }
-    }
-
-    repulseBoids  (vector) {
-        if (!this.boids) {
-            return;
-        }
-        let boid;
-        for (let i = 0, il = this.boids.length; i < il; i++) {
-
-            boid = this.boids[i];
-
-            vector.z = boid.position.z;
-
-            boid.repulse(vector);
-        }
-    }
-
 // window resize
     windowResize () {
 	    this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -2239,7 +2159,8 @@ export class WglUtil {
     }
 
     genPointsMeshFromMesh  (mesh, cfg, group?) {
-        var geom = new THREE.Geometry().fromBufferGeometry(mesh.geometry);
+        // var geom = new THREE.Geometry().fromBufferGeometry(mesh.geometry);
+        var geom = mesh.geometry.toBufferGeometry();
         var pointsMesh = this.genPointsMeshFromGeometry(geom, cfg, group);
         pointsMesh.position.set(mesh.position.x, mesh.position.y, mesh.position.z);
         return pointsMesh;
