@@ -1039,21 +1039,25 @@ export class WglUtil {
         var geom = new THREE.BufferGeometry();
         var range = this.particleCfg.range;
         var vertices = [];
+        var colors = [];
         for (var i = 0; i < this.particleCfg.count; i++) {
-            var particle = new THREE.Vector3(
-                Math.random() * range - range / 2,
-                Math.random() * range - range / 2,
-                Math.random() * range - range / 2
-            );
-            // particle.userData = 'Particle ' + i;
-            vertices.push(particle);
-            /*
-            var color = new THREE.Color(0x00FF00);
+            // var particle = new THREE.Vector3(
+            //     Math.random() * range - range / 2,
+            //     Math.random() * range - range / 2,
+            //     Math.random() * range - range / 2
+            // );
+            let x = Math.random() * range - range / 2;
+            let y = Math.random() * range - range / 2;
+            let z = Math.random() * range - range / 2;
+        // particle.userData = 'Particle ' + i;
+            vertices.push(x, y, z);
+
+            var color = new THREE.Color(this.particleCfg.color);
             color.setHSL(Math.random(), 1.0, 0.5);
-            geom.colors.push(color);
-            */
+            colors.push(color.r, color.g, color.b);
         }
         geom.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        geom.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
         return geom;
     }
 
@@ -1122,11 +1126,12 @@ export class WglUtil {
             opacity: this.particleCfg.opacity,
             vertexColors: THREE.VertexColors,
             sizeAttenuation: this.particleCfg.sizeAttenuation,
-            //color: particleCfg.color
+            // color: color,
             //, map: THREE.ImageUtils.loadTexture('assets/textures/heart2.png'),
             blending: THREE.AdditiveBlending,
             alphaTest: 0.5
         });
+        // material.color = new THREE.Color(0xFF0000); // .setHSL( 1.0, 0.3, 0.7 );
         return material;
     }
 
