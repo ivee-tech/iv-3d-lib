@@ -36,7 +36,7 @@
     "numeral": "^2.0.6",
     "requirejs": "^2.3.2",
     "text": "github:requirejs/text#latest",
-    "three": "^0.126.1",
+    "three": "^0.137.0",
     "three-anaglypheffect": "^1.0.0",
     "three-asciieffect": "^1.0.1",
     "three-buffer-geometry-utils": "^1.0.0",
